@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>decoder v 0.0.1</title>
+</head>
+<body>
+
+  <h1>decoder</h1>
+
+  <h3>Board Status</h3>
+  <span id="status"></span>
+
+  <h3>Sensor</h3>
+  <span id="sensor"></span>
+  <div id="vis" style="width:100px; height:100px"></div>
+
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/vendor/jquery/dist/jquery.min.js"></script>
+
+  <script>
+    var socket = io.connect('http://localhost:3000');
+
+    socket.on('board', function (data) {
+      console.info(data)
+      $("#status").text(data.status)
+    });
+
+    socket.on('sensor', function (data) {
+      //console.info(data)
+      $("#sensor").text(data.value)
+
+      function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+      }
+
+      function rgbToHex(r, g, b) {
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+      }
+
+      var round = Math.round( data.value );
+      var col = rgbToHex(round,round,round);
+      console.log(col)
+      $("#vis").css("background-color", col)
+    });
+  </script>
+
+</body>
+</html>

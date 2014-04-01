@@ -1,0 +1,15 @@
+{
+  "name": "decoder",
+  "version": "0.0.0",
+  "description": "decode values from a phisical object in order to reconstruct an image",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "martinez-zea",
+  "license": "Fair License",
+  "dependencies": {
+    "johnny-five": "^0.7.30",
+    "socket.io": "^0.9.16"
+  }
+}

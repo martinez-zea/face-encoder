@@ -1,0 +1,23 @@
+{
+  "name": "decoder",
+  "main": "index.js",
+  "version": "0.0.1",
+  "authors": [
+    "martinez-zea"
+  ],
+  "description": "decode values from a phisical object in order to reconstruct an image",
+  "license": "Fair License",
+  "homepage": "http://martinez-zea.info",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.0"
+  }
+}
