@@ -1,10 +1,17 @@
+//system
 var http = require('http'),
   socket = require('socket.io'),
   fs = require('fs'),
   child = require("child_process"),
   five = require("johnny-five"),
-  app, board, io, sensor
+  _ = require("lodash"),
+  app, board, io
 
+//data
+var sensor_lectures = [],
+  max_samples = 20,
+  sensor,
+  index = 0
 
 // main route
 // TODO: express?
@@ -44,14 +51,53 @@ board.on("ready", function() {
 
   sensor = new five.Sensor({
     pin: "A0",
-    freq: 250
+    freq: 25
   });
 
-  sensor.scale(0,255).on("data", function() {
-    var data = this
+  sensor.on("data", function() {
 
-    io.sockets.emit('sensor', { value: data.value });
+    digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
+      io.sockets.emit('sensor', { raw: raw, smooth: smooth });
+    })
 
   });
 
 });
+
+// filter based on:
+// http://playground.arduino.cc/Main/DigitalSmooth
+function digitalSmooth (rawIn, rawArray, callback) {
+  var sorted, bottom, top
+
+  rawArray[index] = rawIn // input new data into the oldest slot
+
+  if(index < max_samples){
+    index++
+  } else {
+    index = 0
+  }
+
+  sorted = _.sortBy(rawArray) //clone and sort
+
+  // throw out top and bottom 15% of samples
+  // limit to throw out at least one from top and bottom
+  bottom = Math.max(((max_samples * 15)/100), 1)
+  top = Math.min(((max_samples * 85)/100)+1, max_samples - 1)
+
+  // average
+  var sum = 0;
+  var elements = 0;
+  for(var i = bottom; i < top; i++){
+    sum += sorted[i]
+    elements++
+  }
+
+  var smoothed = sum/elements
+
+  // drop NaN
+  if (smoothed) {
+    callback(smoothed, rawIn)
+  };
+
+}
+

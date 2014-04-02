@@ -10,6 +10,7 @@
   "license": "Fair License",
   "dependencies": {
     "johnny-five": "^0.7.30",
-    "socket.io": "^0.9.16"
+    "socket.io": "^0.9.16",
+    "lodash": "^2.4.1"
   }
 }
