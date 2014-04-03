@@ -69,13 +69,7 @@ board.on("ready", function() {
 });
 
 function decode (data) {
-  var MEASURE_0 = 320,
-    MEASURE_1 = 260,
-    MEASURE_2 = 238,
-    MEASURE_3 = 225,
-    rounded = Math.round(data)
-
-  //console.log("rounded", rounded)
+  var  rounded = Math.round(data)
 
   if (previous_read != rounded) {
 
@@ -91,20 +85,11 @@ function decode (data) {
       console.log("20mm") //3
     } else if (rounded <= 180 && rounded > 165) {
       console.log("25mm") //4
-    } else if (rounded <= 165) {
+    } else if (rounded <= 165 && rounded > 160) {
       console.log("30mm") //5
     } else {
       console.log("rounded", rounded)
     }
-
-
-    // if(rounded >= MEASURE_1 && rounded <= MEASURE_1+10){
-    //   console.log("5MM")
-    // }
-
-    // if(rounded <= TOP){
-    //   console.log("MAX")
-    // }
 
     previous_read = rounded
   }
