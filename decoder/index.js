@@ -104,7 +104,7 @@ board.on("ready", function() {
 
     digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
       //trainDecoder(smooth)
-     // decode(smooth)
+      decode(smooth)
       io.sockets.emit('sensor', { raw: raw, smooth: smooth });
     })
 
@@ -113,37 +113,55 @@ board.on("ready", function() {
 });
 
 function decode (data) {
-  var  rounded = Math.round(data)
-
+  var  rounded = parseFloat(data).toFixed(0) //one decimal place
   //console.log("ro",rounded)
+
   if (previous_read != rounded) {
 
-    if(rounded >= 290){
-      console.log("empty")
-      //buildPortrait(-1)
-    } else if (rounded < 320 && rounded > 245) {
-      console.log("5mm") //base
-      //buildPortrait(0)
-    } else if (rounded <= 245 && rounded > 230) {
-      console.log("10mm") //1
-      //buildPortrait(1)
-    } else if (rounded <= 230 && rounded > 220) {
-      console.log("15mm") //2
-      //buildPortrait(2)
-    } else if (rounded <= 220 && rounded > 180) {
-      console.log("20mm") //3
-      //buildPortrait(3)
-    } else if (rounded <= 180 && rounded > 165) {
-      console.log("25mm") //4
-      //buildPortrait(4)
-    } else if (rounded <= 165 && rounded > 150) {
-      console.log("30mm") //5
-      //buildPortrait(5)
-    } else if (rounded <= 150 ) {
-      console.log("35mm") //5
-      //buildPortrait(6)
-    } else {
-      console.log("rounded", rounded)
+    switch (true){
+      case (rounded >= 290):
+        console.log("empty")
+        //buildPortrait(-1)
+        break
+
+      case rounded < 320 && rounded > 245:
+        console.log("5mm") //base
+        //buildPortrait(0)
+        break
+
+      case rounded <= 245 && rounded > 230:
+        console.log("10mm") //1
+        //buildPortrait(1)
+        break
+
+      case rounded <= 230 && rounded > 220:
+        console.log("15mm") //2
+        //buildPortrait(2)
+        break
+
+      case rounded <= 220 && rounded > 180:
+        console.log("20mm") //3
+        //buildPortrait(3)
+        break
+
+      case rounded <= 180 && rounded > 165:
+        console.log("25mm") //4
+        //buildPortrait(4)
+        break
+
+      case rounded <= 165 && rounded > 150:
+        console.log("30mm") //5
+        //buildPortrait(5)
+        break
+
+      case rounded <= 150:
+        console.log("35mm") //6
+        //buildPortrait(6)
+        break
+
+      default:
+        console.log("rounded", rounded)
+        break
     }
 
     previous_read = rounded
@@ -159,9 +177,10 @@ function buildPortrait (measure) {
       //   portraitDone(portrait)
       // };
     }
-    //console.log(portrait)
+    console.log(portrait)
     previous_decode = measure
   };
+  console.log(portrait)
 }
 
 function portraitDone(data){
