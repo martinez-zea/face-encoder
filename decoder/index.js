@@ -1,13 +1,39 @@
-//system
+// # Decoder
+//
+// A program that control the decoder machine, read and process data collected
+// via a distance measure sensor and decode it in order to display an image that
+// is saved in a physical object.
+//
+// ## Dependences
+// we use an excellent node.js module to interact with an Arduino board called
+// johnny-five; to send data to a browser a simple web server is created with
+// real time communication via socket.io
+//
 var http = require('http'),
   socket = require('socket.io'),
   fs = require('fs'),
   child = require("child_process"),
   five = require("johnny-five"),
-  _ = require("lodash"),
-  app, board, io
+  _ = require("lodash")
 
-//data
+// vars to hold the server, Arduino board and socket.io
+var app, board, io,
+  SERVER_PORT = 3000,
+  SERIAL_PORT = "/dev/tty.usbmodem1421"
+
+// Hardware variables
+var motor, front,
+  back, start,
+  // pins and speed of the motor
+  MOTOR_PWM = 9,
+  MOTOR_DIRECTION = 8,
+  FORWARD_SPEED = 200, //really slow, it's inverted
+  REVERSE_SPEED = 255
+  FRONT_PIN = 7,
+  BACK_PIN = 4,
+  START_PIN = 2
+
+// variables to store data analysis and conversion
 var sensor_lectures = [],
   max_samples = 20,
   sensor,
@@ -16,22 +42,15 @@ var sensor_lectures = [],
   previous_decode = null,
   portrait = []
 
-// hardware
-var motor, front,
-  back, start,
-  MOTOR_PWM = 7,
-  MOTOR_DIRECTION = 6,
-  FORWARD_SPEED = 200, //really slow, it's inverted
-  REVERSE_SPEED = 255,
-  FRONT_PIN = 8,
-  BACK_PIN = 9,
-  START_PIN = 10
+// state of the system
+var machine_state = {
+  SCANNING = false
+}
 
 
-// main route
-// TODO: express?
+// Very simple web server,
+// in posteriors versions could be replaced with something like Express.js
 function handler (req, res) {
-  //fs.readFile(__dirname + '/views/index.html',
   fs.readFile(__dirname + req.url, function (err,data) {
     if (err) {
       res.writeHead(404)
@@ -43,63 +62,96 @@ function handler (req, res) {
   });
 }
 
-//create server
+//Create the web server listening in the port 3000
 app = http.createServer(handler)
-app.listen(3000)
+app.listen(SERVER_PORT)
 
-//create socket io
+// Start socket.io with not so verbose logging
 io = socket.listen(app)
 io.set("log level", 1)
 
-// arduino
+// Instantiate the Arduino lib
 board = new five.Board({
-  port: "/dev/tty.usbmodem1421"
+  port: SERIAL_PORT
 })
 
+// # Johnny-five main method
 board.on("ready", function() {
 
-  //child.exec("open http://localhost:3000/views/index.html")
-
-  // motor controll
-  motor = new five.Motor({
-    pins: { pwm: MOTOR_PWM, dir: MOTOR_DIRECTION}
-  });
-
-  board.repl.inject({
-    motor: motor
-  });
-
-  //end of line
-  front = new five.Button(8);
-  back = new five.Button(9);
-  start = new five.Button(10);
-
-  // logic of buttons
-  start.on("down", function() {
-    console.log("start");
-    motor.forward(FORWARD_SPEED); //buggy
-  });
-
-  front.on("down", function() {
-    console.log("front");
-    motor.reverse(REVERSE_SPEED);
-  });
-
-  back.on("down", function() {
-    console.log("back");
-    motor.stop()
-  });
+  /*
+  child.exec("open http://localhost:3000/views/index.html")
+  */
 
 
-  io.sockets.on('connection', function (socket){
-    socket.emit('board', { status: 'ready' });
-  })
-
+  // # Setup board
+  // Instantiate the sensor, and configure it to read each 25ms
   sensor = new five.Sensor({
     pin: "A0",
     freq: 25
   });
 
+  // crate a new instance of motor
+  motor = new five.Motor({
+    pins: { pwm: MOTOR_PWM, dir: MOTOR_DIRECTION}
+  });
+
+  // buttons
+  front = new five.Button(FRONT_PIN);
+  back = new five.Button(BACK_PIN);
+  start = new five.Button(START_PIN);
+
+  // inject data to the REPL
+  board.repl.inject({
+    motor: motor
+  });
+
+  // inform the client that we have connection with the board
+  io.sockets.on('connection', function (socket){
+    socket.emit('board', { status: 'ready' });
+  })
+
+  // ### Listen to buttons events
+
+  // Button that controls the initiate of the process
+  start.on("down", function() {
+    console.log("start pressed")
+
+    // if we are not in the middle of a process
+    if (!machine_state.SCANNING){
+      // initiate the motion
+      motor.forward(FORWARD_SPEED) //buggy
+      machine_state.SCANNING = true
+    }
+  })
+
+  // the object reached the front limit
+  front.on("down", function() {
+    console.log("front reached")
+
+    // verify that the process is on going
+    if (!machine_state.SCANNING) {
+      motor.reverse(REVERSE_SPEED)
+    }
+  })
+
+  // back to home, ready to start again
+  back.on("down", function() {
+    console.log("back reached")
+
+    // again verify that its doing something
+    if (!machine_state.SCANNING) {
+      // stop the motor
+      motor.stop()
+      //reset the state
+      machine_state.SCANNING = false
+    }
+  })
+
+  // ## Sensor data
+  // Here is where the magic happens. When a new lecture is received it is
+  // processed first to clean noise from the signal, then, the cleaned data is
+  // analyzed in order to find the information encoded in to the object, finally
+  // the *decoded object* is sent to the client to visualize it.
   sensor.on("data", function() {
 
     digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
@@ -112,6 +164,8 @@ board.on("ready", function() {
 
 });
 
+
+// on going ....
 function decode (data) {
   var  rounded = parseFloat(data).toFixed(0) //one decimal place
   //console.log("ro",rounded)
@@ -211,27 +265,37 @@ function trainDecoder (data){
   console.log("bottom", bottom)
 }
 
-// filter based on:
-// http://playground.arduino.cc/Main/DigitalSmooth
+// # digitalSmooth
+// Remove noise from the raw signal given by the sensor. Basically, after
+// order an array of lectures, some samples are dropped and then the average
+// is returned
+//
+// filter based on
+// [this entry](http://playground.arduino.cc/Main/DigitalSmooth)
+// from Arduino's playground
+//
 function digitalSmooth (rawIn, rawArray, callback) {
   var sorted, bottom, top
 
-  rawArray[index] = rawIn // input new data into the oldest slot
+  // input new data into the oldest slot
+  rawArray[index] = rawIn
 
+  // update the sampler index counter
   if(index < max_samples){
     index++
   } else {
     index = 0
   }
 
-  sorted = _.sortBy(rawArray) //clone and sort
+  // clone and sort the array. Magic provided by lodash.js
+  sorted = _.sortBy(rawArray)
 
   // throw out top and bottom 15% of samples
   // limit to throw out at least one from top and bottom
   bottom = Math.max(((max_samples * 15)/100), 1)
   top = Math.min(((max_samples * 85)/100)+1, max_samples - 1)
 
-  // average
+  // Calculate the average
   var sum = 0;
   var elements = 0;
   for(var i = bottom; i < top; i++){
@@ -243,6 +307,7 @@ function digitalSmooth (rawIn, rawArray, callback) {
 
   // drop NaN
   if (smoothed) {
+    // return the cleaned data
     callback(smoothed, rawIn)
   };
 
