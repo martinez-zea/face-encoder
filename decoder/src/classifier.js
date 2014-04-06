@@ -3,6 +3,8 @@
 // dependences
 var brain = require("brain"),
   chalk = require('chalk'),
+  fs = require('fs'),
+  utils = require('./utils'),
   //sample readings
   empty = require('./samples/EMPTY').samples,
   five = require('./samples/FIVE').samples,
@@ -42,9 +44,32 @@ var train = function () {
   // start measuring execution time
   console.time('train')
   // Train the network with the samples
-  heightClassifier.train(samples)
+  heightClassifier.train(samples, {
+      errorThresh: 0.004,  // error threshold to reach
+      iterations: 20000,   // maximum training iterations
+      log: true,           // console.log() progress periodically
+      logPeriod: 10        // number of iterations between logging
+    })
+
   // stop timer
   console.timeEnd('train')
+
+  // dump the trained network to a file
+
+  var net = heightClassifier.toJSON()
+
+  var path = __dirname + '/network/net.json'
+  // write to file
+  fs.writeFile(path, JSON.stringify(net), function(err) {
+      // error handling
+      if(err) {
+          return utils.onErr('saving file', err)
+      }
+
+      // if OK then restart process
+      console.log( chalk.green("Successfully saved network to file") );
+  });
+
 }
 
 // # Guess
