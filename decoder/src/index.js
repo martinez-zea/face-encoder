@@ -65,6 +65,10 @@ program
   .option('-d, --decode', 'Execute the main program')
   .parse(process.argv);
 
+if(program.decode){
+  classifier.train()
+}
+
 if (program.learn) {
   var learn = require('./learn')
   learn.getData()

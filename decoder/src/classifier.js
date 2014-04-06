@@ -1,4 +1,17 @@
-var brain = require("brain")
+// # Classifier
+
+// dependences
+var brain = require("brain"),
+  chalk = require('chalk'),
+  //sample readings
+  empty = require('./samples/EMPTY').samples,
+  five = require('./samples/FIVE').samples,
+  ten = require('./samples/TEN').samples,
+  fiveteen = require('./samples/FIVETEEN').samples,
+  twenty = require('./samples/TWENTY').samples,
+  twenty_five = require('./samples/TWENTY_FIVE').samples,
+  thirty = require('./samples/THIRTY').samples
+
 
 // heights of the object
 var height = {
@@ -12,66 +25,42 @@ var height = {
   FINISH : 1
 }
 
-// # Classifier
-// train the classifier with some data of the height ranges available in the
-// physical object
+// # heightClassifier
+// Implement a neural network (provided by ```brain```) in order to guess the
+// size of each block of the object
 var heightClassifier = new brain.NeuralNetwork()
 
-
+// # Train
+// train the classifier with some data of the height ranges available in the
+// physical object obtained by ```learn```
 var train = function () {
-  // Initial data for the trainer
-heightClassifier.train([
-  // case: no object
-  {input: [0.29657869012707727], output: [height.EMPTY]},
-  {input: [0.29599217986314763], output: [height.EMPTY]},
-  {input: [0.2954708374063213], output: [height.EMPTY]},
-  {input: [0.2956011730205279], output: [height.EMPTY]},
+  // concatenate all the arrays
+  var samples = empty.concat(five, ten, fiveteen, twenty, twenty_five, thirty)
 
-  // case: base of object
-  {input: [0.25304659498207877], output: [height.FIVE]},
-  {input: [0.2534376018246985], output: [height.FIVE]},
-  {input: [0.25298142717497546], output: [height.FIVE]},
-  {input: [0.2532420984033886], output: [height.FIVE]},
+  console.log( chalk.green("learning time: ") )
 
-  // // case: 10mm -- first important data
-  {input: [0.22163571195829251], output: [height.TEN]},
-  {input: [0.22222222222222215], output: [height.TEN]},
-  {input: [0.22319973932877152], output: [height.TEN]},
-  {input: [0.22137504072987937], output: [height.TEN]},
-
-  // // case 15mm
-  {input: [0.1975887911371782], output: [height.FIVETEEN]},
-  {input: [0.19771912675138478], output: [height.FIVETEEN]},
-  {input: [0.19824046920821112], output: [height.FIVETEEN]},
-  {input: [0.1983056370153144], output: [height.FIVETEEN]},
-
-  // // case: 20mm
-  {input: [0.1818833496252851], output: [height.TWENTY]},
-  {input: [0.18194851743238838], output: [height.TWENTY]},
-  {input: [0.18344737699576408], output: [height.TWENTY]},
-  {input: [0.1847507331378299], output: [height.TWENTY]},
-
-  // // case: 25mm
-  {input: [0.1517758227435647], output: [height.TWENTY_FIVE]},
-  {input: [0.15066797002280874], output: [height.TWENTY_FIVE]},
-  {input: [0.14923427826653635], output: [height.TWENTY_FIVE]},
-  {input: [0.1489084392310199], output: [height.TWENTY_FIVE]},
-
-  // // case: 30mm
-  {input: [0.13027044639947863], output: [height.THIRTY]},
-  {input: [0.1303356142065819], output: [height.THIRTY]},
-  {input: [0.1289019224503095], output: [height.THIRTY]},
-  {input: [0.12903225806451607], output: [height.THIRTY]},
-
-  // // case: 35mm
-  // {input: [149.0], output: [height.FINAL]},
-  // {input: [130.0], output: [height.FINAL]},
-  // {input: [100.0], output: [height.FINAL]}
-])
+  // start measuring execution time
+  console.time('train')
+  // Train the network with the samples
+  heightClassifier.train(samples)
+  // stop timer
+  console.timeEnd('train')
 }
 
+// # Guess
+// wrapper to ```brain.run()```.
+// execute a query to the network
 var guess = function (data){
-  return heightClassifier.run([data])
+
+  console.log( chalk.green("querying time: ") )
+
+  // start measuring execution timer
+  console.time('train')
+  var response = heightClassifier.run([data])
+  // stop timer
+  console.timeEnd('train')
+
+  return response
 }
 
 
