@@ -11,6 +11,10 @@
   "dependencies": {
     "johnny-five": "^0.7.30",
     "socket.io": "^0.9.16",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "brain": "^0.6.3"
+  },
+  "devDependencies": {
+    "docco": "^0.6.3"
   }
 }
