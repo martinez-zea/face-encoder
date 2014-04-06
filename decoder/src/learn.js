@@ -91,7 +91,6 @@ function ask(){
       return utils.onErr(err)
     }
 
-    console.log("in",result.number)
     // if the input between the range of options
     if (result.number < 7){
       // change the flag

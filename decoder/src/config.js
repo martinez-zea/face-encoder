@@ -18,5 +18,5 @@ module.exports = {
   // Maximum numbers of readigs to filter
   MAX_SAMPLES : 20,
   // Maximum number of samples to learn
-  TO_LEARN : 100
+  TO_LEARN : 2000
 }

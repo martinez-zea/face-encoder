@@ -38,14 +38,14 @@ var heightClassifier = new brain.NeuralNetwork()
 var train = function () {
   // concatenate all the arrays
   var samples = empty.concat(five, ten, fiveteen, twenty, twenty_five, thirty)
-
+  console.log("id",samples)
   console.log( chalk.green("learning time: ") )
 
   // start measuring execution time
   console.time('train')
   // Train the network with the samples
   heightClassifier.train(samples, {
-      errorThresh: 0.004,  // error threshold to reach
+      errorThresh: 0.00004,  // error threshold to reach
       iterations: 20000,   // maximum training iterations
       log: true,           // console.log() progress periodically
       logPeriod: 10        // number of iterations between logging
