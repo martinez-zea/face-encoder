@@ -1,5 +1,11 @@
 // # Decoder
+// ```
+// martinez-zea
+// 2014
+// http://martinez-zea.info
 //
+// Code under a Fair License
+// ```
 // A program that control the decoder machine, read and process data collected
 // via a distance measure sensor and decode it in order to display an image that
 // is saved in a physical object.
@@ -15,6 +21,9 @@ var http = require('http'),
   child = require("child_process"),
   five = require("johnny-five"),
   _ = require("lodash")
+
+// local modules
+var classifier = require("./classifier")
 
 // vars to hold the server, Arduino board and socket.io
 var app, board, io,
@@ -44,9 +53,8 @@ var sensor_lectures = [],
 
 // state of the system
 var machine_state = {
-  SCANNING = false
+  SCANNING : false
 }
-
 
 // Very simple web server,
 // in posteriors versions could be replaced with something like Express.js
@@ -75,19 +83,25 @@ board = new five.Board({
   port: SERIAL_PORT
 })
 
+// Open browser
+/*
+child.exec("open http://localhost:3000/views/index.html")
+*/
+
+
+// Initialize trainer
+classifier.train()
+
 // # Johnny-five main method
 board.on("ready", function() {
 
-  /*
-  child.exec("open http://localhost:3000/views/index.html")
-  */
 
 
   // # Setup board
-  // Instantiate the sensor, and configure it to read each 25ms
+  // Instantiate the sensor, and configure it to read each 10ms
   sensor = new five.Sensor({
     pin: "A0",
-    freq: 25
+    freq: 10
   });
 
   // crate a new instance of motor
@@ -102,7 +116,8 @@ board.on("ready", function() {
 
   // inject data to the REPL
   board.repl.inject({
-    motor: motor
+    motor: motor,
+    classifier: classifier
   });
 
   // inform the client that we have connection with the board
@@ -152,11 +167,14 @@ board.on("ready", function() {
   // processed first to clean noise from the signal, then, the cleaned data is
   // analyzed in order to find the information encoded in to the object, finally
   // the *decoded object* is sent to the client to visualize it.
-  sensor.on("data", function() {
+  sensor.scale(0,1).on("data", function() {
 
     digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
-      //trainDecoder(smooth)
-      decode(smooth)
+
+      //console.log(smooth)
+      var guess = classifier.guess(smooth)
+      decode(guess)
+
       io.sockets.emit('sensor', { raw: raw, smooth: smooth });
     })
 
@@ -167,59 +185,58 @@ board.on("ready", function() {
 
 // on going ....
 function decode (data) {
-  var  rounded = parseFloat(data).toFixed(0) //one decimal place
-  //console.log("ro",rounded)
+ console.log("data",data)
+//   if (previous_read !== data) {
 
-  if (previous_read != rounded) {
 
     switch (true){
-      case (rounded >= 290):
+      case data > 0 && data < 0.2:
         console.log("empty")
         //buildPortrait(-1)
         break
 
-      case rounded < 320 && rounded > 245:
+      case data > 0.2 && data < 0.4:
         console.log("5mm") //base
         //buildPortrait(0)
         break
 
-      case rounded <= 245 && rounded > 230:
-        console.log("10mm") //1
-        //buildPortrait(1)
-        break
+      // case data > 0.4 && data < 0.5:
+      //   console.log("10mm") //1
+      //   //buildPortrait(1)
+      //   break
 
-      case rounded <= 230 && rounded > 220:
-        console.log("15mm") //2
-        //buildPortrait(2)
-        break
+      // case data > 0.5 && data < 0.7:
+      //   console.log("15mm") //2
+      //   //buildPortrait(2)
+      //   break
 
-      case rounded <= 220 && rounded > 180:
-        console.log("20mm") //3
-        //buildPortrait(3)
-        break
+      // case data > 0.7 && data < 0.8:
+      //   console.log("20mm") //3
+      //   //buildPortrait(3)
+      //   break
 
-      case rounded <= 180 && rounded > 165:
-        console.log("25mm") //4
-        //buildPortrait(4)
-        break
+      // case data > 0.8 && data > 0.8:
+      //   console.log("25mm") //4
+      //   //buildPortrait(4)
+      //   break
 
-      case rounded <= 165 && rounded > 150:
-        console.log("30mm") //5
-        //buildPortrait(5)
-        break
+      // case data > 0.8 && data < 1:
+      //   console.log("30mm") //5
+      //   //buildPortrait(5)
+      //   break
 
-      case rounded <= 150:
-        console.log("35mm") //6
-        //buildPortrait(6)
-        break
+      // case data <= 150:
+      //   console.log("35mm") //6
+      //   //buildPortrait(6)
+      //   break
 
       default:
-        console.log("rounded", rounded)
+        console.log("data", data)
         break
     }
 
-    previous_read = rounded
-  }
+  //   previous_read = data
+  // }
 }
 
 function buildPortrait (measure) {
@@ -241,29 +258,6 @@ function portraitDone(data){
   console.log("portrait",data)
 }
 
-function trainDecoder (data){
-  var rounded = Math.round(data)
-
-  if (previous_read != rounded) {
-    portrait.push(rounded)
-    previous_read = rounded
-  }
-
-  var bottom = _.max(portrait)
-  var top = _.min(portrait)
-
-  // bottom  324
-  // top 165
-
-//   top  166
-// bottom 318
-
-// top  176
-// bottom 318
-
-  console.log("top ", top)
-  console.log("bottom", bottom)
-}
 
 // # digitalSmooth
 // Remove noise from the raw signal given by the sensor. Basically, after
@@ -310,6 +304,4 @@ function digitalSmooth (rawIn, rawArray, callback) {
     // return the cleaned data
     callback(smoothed, rawIn)
   };
-
 }
-
