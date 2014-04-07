@@ -10,6 +10,13 @@
 // via a distance measure sensor and decode it in order to display an image that
 // is saved in a physical object.
 //
+// # Scripts
+// * [classifier.js](classifier.html)
+// * [config.js](config.html)
+// * [decode.js](decode.html)
+// * [learn.js](learn.html)
+// * [utils.js](utils.html)
+//
 // ## Dependences
 // we use an excellent node.js module to interact with an Arduino board called
 // johnny-five; to send data to a browser a simple web server is created with

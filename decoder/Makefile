@@ -1,4 +1,4 @@
 doc:
-	docco index.js
+	docco src/*.js
 
 main: doc

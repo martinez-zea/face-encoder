@@ -1,5 +1,7 @@
 // # Classifier
-
+// Implement a neural network (provided by ```brain```) in order to guess the
+// size of each block of the object
+//
 // dependences
 var brain = require("brain"),
   chalk = require('chalk'),
@@ -28,8 +30,7 @@ var height = {
 }
 
 // # heightClassifier
-// Implement a neural network (provided by ```brain```) in order to guess the
-// size of each block of the object
+// the network
 var heightClassifier = new brain.NeuralNetwork()
 
 // # Train
@@ -88,7 +89,7 @@ var guess = function (data){
   return response
 }
 
-
+// # Exports
 module.exports.height = height
 module.exports.heightClassifier = heightClassifier
 module.exports.train = train
