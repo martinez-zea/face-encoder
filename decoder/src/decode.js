@@ -1,3 +1,6 @@
+// # Decode
+// main module, where the physical object is translated to a digital image
+
 var http = require('http'),
   fs = require('fs'),
   socket = require('socket.io'),
@@ -33,6 +36,9 @@ var machine_state = {
   SCANNING : false
 }
 
+
+//# setup
+// initialize all the environment
 function setup (){
   // Very simple web server,
   // in posteriors versions could be replaced with something like Express.js
@@ -71,8 +77,10 @@ function setup (){
       utils.onErr('loading network file', err)
     }
 
+    // translate the input string into a JSON object
     var json = JSON.parse(data.toString())
 
+    // load the data into the network
     network.fromJSON(json)
 
     console.log( chalk.gray("network file succesfully readed") )
@@ -160,89 +168,85 @@ function main (){
     sensor.scale(0,1).on("data", function() {
 
       utils.digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
-
-        //console.log(smooth)
+        // ask the classifier about the current data
         var guess = network.run([smooth])
-        console.log(guess.toString())
-        // decode(guess)
+        // send the answer to a function to interpret the data
+        interpret(guess)
 
         io.sockets.emit('sensor', { raw: raw, smooth: smooth });
       })
-
     });
-
   });
 
 
-  // on going ....
-  function decode (data) {
-   console.log("data",data)
-  //   if (previous_read !== data) {
+  // # Interpret
+  // translate the guess obtained from the classifier into the heights
+  // of the object
+  function interpret (data) {
+    switch (true){
+      case data > 0 && data < 0.1:
+        /*console.log("empty")*/
+        buildPortrait(-1)
+        break
 
+      case data > 0.1 && data < 0.2:
+        /*console.log("5mm") //base*/
+        buildPortrait(0)
+        break
 
-      switch (true){
-        case data > 0 && data < 0.2:
-          console.log("empty")
-          //buildPortrait(-1)
-          break
+      case data > 0.2 && data < 0.4:
+        /*console.log("10mm") //1*/
+        buildPortrait(1)
+        break
 
-        case data > 0.2 && data < 0.4:
-          console.log("5mm") //base
-          //buildPortrait(0)
-          break
+      case data > 0.4 && data < 0.5:
+        /*console.log("15mm") //2*/
+        buildPortrait(2)
+        break
 
-        // case data > 0.4 && data < 0.5:
-        //   console.log("10mm") //1
-        //   //buildPortrait(1)
-        //   break
+      case data > 0.5 && data < 0.7:
+        /*console.log("20mm") //3*/
+        buildPortrait(3)
+        break
 
-        // case data > 0.5 && data < 0.7:
-        //   console.log("15mm") //2
-        //   //buildPortrait(2)
-        //   break
+      case data > 0.7 && data < 0.8:
+        /*console.log("25mm") //4*/
+        buildPortrait(4)
+        break
 
-        // case data > 0.7 && data < 0.8:
-        //   console.log("20mm") //3
-        //   //buildPortrait(3)
-        //   break
-
-        // case data > 0.8 && data > 0.8:
-        //   console.log("25mm") //4
-        //   //buildPortrait(4)
-        //   break
-
-        // case data > 0.8 && data < 1:
-        //   console.log("30mm") //5
-        //   //buildPortrait(5)
-        //   break
-
-        // case data <= 150:
-        //   console.log("35mm") //6
-        //   //buildPortrait(6)
-        //   break
-
-        default:
-          console.log("data", data)
-          break
-      }
-
-    //   previous_read = data
-    // }
+      case data > 0.8 && data < 1:
+        /*console.log("30mm") //5*/
+        buildPortrait(5)
+        break
+      /*
+      case data <= 150:
+        console.log("35mm") //6
+        //buildPortrait(6)
+        break
+      */
+      default:
+        console.log( chalk.magenta("unknow data: ", data) )
+        break
+    }
   }
 
+  // # buidPortrait
+  // build an array with the translated data
   function buildPortrait (measure) {
-    if (previous_decode != measure) {
+    // if there is a new measure
+    if (previous_decode !== measure) {
+      // ignore empty and 5mm measures
       if (measure !== -1 && measure !== 0) {
+
         portrait.push(measure)
        // console.log("mea",measure)
         // if (measure === 6) {
         //   portraitDone(portrait)
         // };
       }
-      console.log(portrait)
       previous_decode = measure
     };
-    console.log(portrait)
+    //console.log(portrait)
   }
 
   function portraitDone(data){
