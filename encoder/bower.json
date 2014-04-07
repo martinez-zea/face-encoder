@@ -1,0 +1,23 @@
+{
+  "name": "encoder",
+  "version": "0.0.0",
+  "homepage": "https://github.com/martinez-zea/face-encoder",
+  "authors": [
+    "martinez-zea"
+  ],
+  "description": "take a photograph and code the data into a physical object",
+  "main": "src/index.js",
+  "keywords": [
+    "portrait"
+  ],
+  "license": "Fair License",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ]
+}
