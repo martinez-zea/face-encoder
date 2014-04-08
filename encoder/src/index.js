@@ -15,14 +15,13 @@ program
 
 
 if (program.picture) {
-  console.log(program.args.length);
   if (program.args.length === 2) {
     var input_file = program.args[0]
     var ouput_file = program.args[1]
 
     console.log( chalk.green("Processing: " + input_file + " to: " + ouput_file ) )
 
-    picture.indexAndCrop(input_file, ouput_file)
+    picture.findFace(input_file, ouput_file)
 
   } else{
     console.log( chalk.red.bold("An image path must be provided") )
