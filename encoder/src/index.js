@@ -5,18 +5,25 @@
 var program = require('commander'),
   chalk = require('chalk')
 
+var picture = require('./picture')
 
 
 program
   .version('0.0.1')
-  .option('-p, --picture', 'process a picture')
+  .option('-p, --picture', '--picture <input> <ouput>')
   .parse(process.argv);
 
 
 if (program.picture) {
-  if (program.args.length > 0) {
-    var file = program.args[0]
-    console.log( chalk.green("Processing: ", file) )
+  console.log(program.args.length);
+  if (program.args.length === 2) {
+    var input_file = program.args[0]
+    var ouput_file = program.args[1]
+
+    console.log( chalk.green("Processing: " + input_file + " to: " + ouput_file ) )
+
+    picture.indexAndCrop(input_file, ouput_file)
+
   } else{
     console.log( chalk.red.bold("An image path must be provided") )
     process.exit()
