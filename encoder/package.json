@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/martinez-zea/face-encoder/issues"
   },
-  "homepage": "https://github.com/martinez-zea/face-encoder"
+  "homepage": "https://github.com/martinez-zea/face-encoder",
+  "dependencies": {
+    "opencv": "^0.5.0",
+    "gm": "^1.14.2"
+  }
 }
