@@ -22,6 +22,9 @@
   "dependencies": {
     "opencv": "^0.5.0",
     "gm": "^1.14.2",
-    "commander": "~2.2.0"
+    "commander": "~2.2.0",
+    "chalk": "^0.4.0",
+    "pngjs": "^0.4.0",
+    "node-simple-router": "^0.8.8-3"
   }
 }

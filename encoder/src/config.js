@@ -3,5 +3,6 @@ module.exports = {
   NUMBER_OF_COLORS:  5,
   // image width and height
   IMAGE_WIDTH: 16,
-  IMAGE_HEIGHT: 16
+  IMAGE_HEIGHT: 16,
+  PORT: 3000
 }

@@ -6,13 +6,15 @@ var program = require('commander'),
   chalk = require('chalk')
 
 var picture = require('./picture'),
-  portrait = require('./portrait')
+  portrait = require('./portrait'),
+  server = require('./server')
 
 
 program
   .version('0.0.1')
   .option('-p, --picture', '--picture <input> <ouput>')
   .option('-r, --portrait', '--portrait <input>')
+  .option('-s, --server', 'initate the server')
   .parse(process.argv);
 
 
@@ -37,3 +39,7 @@ if (program.portrait) {
     console.log( chalk.green("portrait data: " + data) )
   })
 };
+
+if (program.server){
+  server.initiate()
+}
