@@ -5,12 +5,14 @@
 var program = require('commander'),
   chalk = require('chalk')
 
-var picture = require('./picture')
+var picture = require('./picture'),
+  portrait = require('./portrait')
 
 
 program
   .version('0.0.1')
   .option('-p, --picture', '--picture <input> <ouput>')
+  .option('-r, --portrait', '--portrait <input>')
   .parse(process.argv);
 
 
@@ -27,5 +29,11 @@ if (program.picture) {
     console.log( chalk.red.bold("An image path must be provided") )
     process.exit()
   };
+};
 
+if (program.portrait) {
+  var input_file = program.args[0]
+  portrait.extract(input_file, function (data) {
+    console.log( chalk.green("portrait data: " + data) )
+  })
 };
