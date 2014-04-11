@@ -12,5 +12,11 @@
   "email_instruction": "por favor ingrese su email",
   "picture_instruction": "voy a timar una fotografia ",
 
-  "instructions": "use sus flechas en el teclado"
+  "instructions": "use sus flechas en el teclado",
+
+  "email_subject": "Su retrato codificado",
+  "email_hello": "Hola",
+  "email_body": "Su retrato esta adjunto",
+  "email_information": "Si dea mas informacion dirijase a",
+  "email_bye": "saludos!"
 }

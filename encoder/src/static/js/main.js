@@ -10,7 +10,7 @@ $(function () {
     onFinished: function(event, currentIndex){
 
       var user = {
-        name : $('#name').val(),
+        username : $('#username').val(),
         email : $('#email').val()
       }
 

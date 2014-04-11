@@ -12,5 +12,11 @@
   "email_instruction": "please input your email",
   "picture_instruction": "now Im going to take a picture ",
 
-  "instructions": "use your arrow key"
+  "instructions": "use your arrow key",
+
+  "email_subject": "Your codified portrait",
+  "email_hello": "Hello",
+  "email_body": "Attached you can find your portrait",
+  "email_information": "If you want more information please go to",
+  "email_bye": "regards!"
 }

@@ -2,25 +2,36 @@ var http = require('http'),
   fs = require('fs'),
   Router = require('node-simple-router'),
   hbs = require('handlebars'),
+  nodemailer = require('nodemailer'),
   _ = require('lodash'),
   i18n = require('i18next'),
   chalk = require('chalk'),
   config = require('./config'),
-  utils = require('./utils')
+  utils = require('./utils'),
+  local_config = require('./local_config'),
+  views = __dirname + '/views'
 
-var views = __dirname + '/views'
-
+// configuration for 18n
 i18n.init({
-  lng: config.LANGUAGE,
+  //default language from config
+  lng: local_config.LANGUAGE,
   ns: 'translation',
   resGetPath: __dirname + '/locales/__ns__-__lng__.json'
 })
 
+// # Email configuration
+// basic settings for a SMTP server
+var transport = nodemailer.createTransport("SMTP", {
+    host: local_config.EMAIL_HOST,
+    auth: {
+        user: local_config.EMAIL_USER,
+        pass: local_config.EMAIL_PASS
+    }
+});
 
 
 var initiate = function (){
   var static_files = __dirname + '/static'
-
 
   // instantiate the router
   var router = new Router({
@@ -72,11 +83,56 @@ var index = function (router){
     })
 }
 
+// # receive
+// get user data from the client, compile an email and send it
 var receive = function (router){
   router.post('/userDone', function (req, res){
-    console.log("post",req.post)
+    console.log( chalk.gray("post /receive") )
+
+    // data for the template
+    var params = {
+      username: req.post.username,
+      hello: i18n.t('email_hello'),
+      body: i18n.t('email_body'),
+      information: i18n.t('email_information'),
+      bye: i18n.t('email_bye')
+    }
+
+    //compile and send the email
+    loadAndCompile(views+'/email.html', function (data, err){
+      sendEmail(req.post.email, data(params), __dirname+'/portraits/16/test.png')
+    })
+
     res.end('ok')
   })
+}
+
+// # SendEmail
+var sendEmail = function (to, body, img_path){
+
+  // envelope
+  // TODO: review attachments
+  var mailOptions = {
+    from: local_config.EMAIL_FROM,
+    subject: i18n.t('email_subject'),
+    to: to,
+    html: body,
+    //forceEmbeddedImages: true,
+    //filename: "portrait.png",
+    filePath: img_path,
+    cid:'portrait@decod.er'
+  }
+
+  // send mail with defined transport object
+  transport.sendMail(mailOptions, function (err, response){
+      if(err){
+          utils.onErr('sending mail', err)
+      }else{
+        console.log( chalk.gray("Message sent: " + response.message) )
+      }
+      // shutdown the connection
+      transport.close()
+  });
 }
 
 var sendResponse = function (res, data, params){

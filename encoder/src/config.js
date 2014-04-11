@@ -5,7 +5,4 @@ module.exports = {
   IMAGE_WIDTH: 16,
   IMAGE_HEIGHT: 16,
   PORT: 3000,
-  // language
-  LANGUAGE: 'en-US',
-  //LANGUAGE: 'es-CO'
 }

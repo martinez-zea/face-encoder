@@ -1,0 +1,10 @@
+module.exports = {
+  // language
+  //LANGUAGE: 'en-US',
+  LANGUAGE: 'es-CO',
+
+  //Email
+  EMAIL_HOST: 'host.com',
+  EMAIL_USER: 'email@host.com',
+  EMAIL_PASS: 'pass',
+  EMAIL_FROM: "encoder <email@host.com>"
