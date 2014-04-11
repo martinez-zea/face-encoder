@@ -15,15 +15,19 @@ var initiate = function (){
 
   var static_files = __dirname + '/static'
 
+  console.log("static_files",static_files)
+
   // instantiate the router
   var router = new Router({
-    logging: false,
+    logging: true,
     log: console.log,
     static_route: static_files,
+    serve_static: true
   })
 
   // routes
   index(router)
+  receive(router)
 
   // start the server
   var server = http.createServer(router);
@@ -37,31 +41,41 @@ var index = function (router){
   router.get("/", function (req, res) {
     console.log( chalk.gray("get /") )
 
-    var templates = {
-      base: views+'/base.html',
-      index: views+'/index.html'
+    var params = {
+      title: 'decoder',
+      // titles
+      first_step_title: 'Welcome',
+      second_step_title: 'name',
+      third_step_title: 'email',
+      four_step_title: 'picture',
+      five_step_title: 'done',
+
+      // content
+      first_content: 'this is the decoder',
+      name_instruction: 'please input your name',
+      email_instruction: 'please input your email',
+      picture_instruction: 'now Im going to take a picture ',
+
+      instructions: 'use your arrow keys'
     }
 
-    var compiled = {}
-
-    _.forEach(templates, function(template, view){
-      loadAndCompile(template, function (data, err){
-        if (!err) {
-          compiled[view] = data
-
-          if (_.size(compiled) === _.size(templates)){
-            sendResponse(res, compiled)
-          }
-        }
-      })
+    loadAndCompile(views+'/base.html', function(data, err){
+      sendResponse(res, data, params)
     })
-  })
 
+
+    })
 }
 
-var sendResponse = function (res, data){
-  var tpl = data.base({"main_content": data.index})
-  res.end(tpl)
+var receive = function (router){
+  router.post('/userDone', function (req, res){
+    console.log("post",req.post)
+    res.end('ok')
+  })
+}
+
+var sendResponse = function (res, data, params){
+  res.end(data(params))
 }
 
 var loadAndCompile = function (filename, callback){
