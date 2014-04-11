@@ -3,23 +3,28 @@ var http = require('http'),
   Router = require('node-simple-router'),
   hbs = require('handlebars'),
   _ = require('lodash'),
+  i18n = require('i18next'),
   chalk = require('chalk'),
   config = require('./config'),
   utils = require('./utils')
 
 var views = __dirname + '/views'
 
+i18n.init({
+  lng: config.LANGUAGE,
+  ns: 'translation',
+  resGetPath: __dirname + '/locales/__ns__-__lng__.json'
+})
+
+
 
 var initiate = function (){
-
-
   var static_files = __dirname + '/static'
 
-  console.log("static_files",static_files)
 
   // instantiate the router
   var router = new Router({
-    logging: true,
+    logging: false,
     log: console.log,
     static_route: static_files,
     serve_static: true
@@ -42,21 +47,21 @@ var index = function (router){
     console.log( chalk.gray("get /") )
 
     var params = {
-      title: 'decoder',
+      title: i18n.t('title'),
       // titles
-      first_step_title: 'Welcome',
-      second_step_title: 'name',
-      third_step_title: 'email',
-      four_step_title: 'picture',
-      five_step_title: 'done',
+      first_step_title: i18n.t('first_step_title'),
+      second_step_title: i18n.t('second_step_title'),
+      third_step_title: i18n.t('third_step_title'),
+      four_step_title: i18n.t('four_step_title'),
+      five_step_title: i18n.t('five_step_title'),
 
       // content
-      first_content: 'this is the decoder',
-      name_instruction: 'please input your name',
-      email_instruction: 'please input your email',
-      picture_instruction: 'now Im going to take a picture ',
+      first_content: i18n.t('first_content'),
+      name_instruction: i18n.t('name_instruction'),
+      email_instruction: i18n.t('email_instruction'),
+      picture_instruction: i18n.t('picture_instruction'),
 
-      instructions: 'use your arrow keys'
+      instructions: i18n.t('instructions')
     }
 
     loadAndCompile(views+'/base.html', function(data, err){

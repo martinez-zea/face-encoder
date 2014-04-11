@@ -1,0 +1,16 @@
+{
+  "title" : "decodificador",
+
+  "first_step_title": "Bienvenido",
+  "second_step_title": "nombre",
+  "third_step_title": "correo electronico",
+  "four_step_title": "fotografia",
+  "five_step_title": "listo",
+
+  "first_content": "este es el decodificador",
+  "name_instruction": "por favor ingrese su nombre",
+  "email_instruction": "por favor ingrese su email",
+  "picture_instruction": "voy a timar una fotografia ",
+
+  "instructions": "use sus flechas en el teclado"
+}
