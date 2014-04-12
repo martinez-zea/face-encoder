@@ -22,7 +22,7 @@
 // johnny-five; to send data to a browser a simple web server is created with
 // real time communication via socket.io and a copule of node.js modules
 //
-var version = '0.0.2',
+var version = '0.1.0',
   program = require('commander'),
   chalk = require('chalk'),
   classifier = require('./classifier')

@@ -16,7 +16,7 @@ module.exports = {
   START_PIN : 2,
   // Sensor
   ANALOG_PIN : 'A0',
-  FREQ : 1,
+  FREQ : 250,
   // Maximum numbers of readigs to filter
   MAX_SAMPLES : 20,
   // Maximum number of samples to learn

@@ -19,12 +19,21 @@ var app, board, io
 
 // Hardware variables
 var motor, front,
-  back, start
+  back, start, l0,
+  l1, l2, l3, l4, l5
+
+var ir_array = {
+  M1: {pin: 0, value: null, binary: 0, color: 'red'},
+  M2: {pin: 1, value: null, binary: 0, color: 'red'},
+  M3: {pin: 2, value: null, binary: 0, color: 'red'},
+  M4: {pin: 3, value: null, binary: 0, color: 'red'},
+  M5: {pin: 4, value: null, binary: 0, color: 'red'},
+  M6: {pin: 5, value: null, binary: 0, color: 'red'}
+}
 
 // variables to store data analysis and conversion
 var sensor_lectures = [],
   max_samples = 20,
-  sensor,
   index = 0,
   previous_read = null,
   previous_decode = null,
@@ -67,7 +76,8 @@ function setup (){
   // Instantiate the Arduino lib
   console.log( chalk.gray("connecting to hardware") )
   board = new five.Board({
-    port: config.SERIAL_PORT
+    port: config.SERIAL_PORT,
+    repl: false
   })
 
   // Read the trained network
@@ -87,9 +97,9 @@ function setup (){
   })
 
   // Open browser
-  /*
+
   child.exec("open http://localhost:3000/views/index.html")
-  */
+
 }
 
 function main (){
@@ -98,10 +108,28 @@ function main (){
 
     // # Setup board
     // Instantiate the sensor, and configure it to read each 10ms
-    sensor = new five.Sensor({
-      pin: config.ANALOG_PIN,
-      freq: config.FREQ
-    });
+    var that = this
+    _.forEach(ir_array, function (item, key){
+      that.pinMode(item.pin, five.Pin.ANALOG)
+    })
+
+    this.loop(25, function() {
+      _.forEach(ir_array, function (item, key){
+        that.analogRead(item.pin, function (voltage) {
+          item.value = voltage
+          if (voltage < 800) {
+            item.binary = 0
+            item.color = '#7c737c'
+          } else{
+            item.binary = 1
+            item.color = "#1c1a1c"
+          }
+        })
+      })
+      io.sockets.emit('measure', ir_array);
+      //console.log("ir_array",ir_array)
+    })
+
 
     // crate a new instance of motor
     motor = new five.Motor({
@@ -114,9 +142,9 @@ function main (){
     start = new five.Button(config.START_PIN);
 
     // inject data to the REPL
-    board.repl.inject({
-      motor: motor,
-    });
+    // board.repl.inject({
+    //   motor: motor,
+    // });
 
     // inform the client that we have connection with the board
     io.sockets.on('connection', function (socket){
@@ -165,18 +193,38 @@ function main (){
     // processed first to clean noise from the signal, then, the cleaned data is
     // analyzed in order to find the information encoded in to the object, finally
     // the *decoded object* is sent to the client to visualize it.
-    sensor.scale(0,1).on("data", function() {
+    // sensor.scale(0,1).on("data", function() {
 
-      utils.digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
-        // ask the classifier about the current data
-        var guess = network.run([smooth])
-        // send the answer to a function to interpret the data
-        interpret(guess)
+    //   utils.digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
+    //     // ask the classifier about the current data
+    //     var guess = network.run([smooth])
+    //     // send the answer to a function to interpret the data
+    //     interpret(guess)
 
-        io.sockets.emit('sensor', { raw: raw, smooth: smooth });
-      })
-    });
-  });
+    //     io.sockets.emit('sensor', { raw: raw, smooth: smooth });
+    //   })
+    // });
+
+    // l0.on('data', function(){
+    //   console.log( chalk.red("l0: " + this.boolean) )
+    // })
+    // l1.on('data', function(){
+    //   console.log( chalk.red("l1: " + this.boolean) )
+    // })
+    // l2.on('data', function(){
+    //   console.log( chalk.red("l2: " + this.boolean) )
+    // })
+    // l3.on('data', function(){
+    //   console.log( chalk.red("l3: " + this.boolean) )
+    // })
+    // l4.on('data', function(){
+    //   console.log( chalk.red("l4: " + this.boolean) )
+    // })
+    // l5.on('data', function(){
+    //   console.log( chalk.red("l5: " + this.boolean) )
+    // })
+  })
+
 
 
   // # Interpret
