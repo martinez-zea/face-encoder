@@ -1,6 +1,7 @@
 var http = require('http'),
   fs = require('fs'),
   Router = require('node-simple-router'),
+  socket = require('socket.io'),
   hbs = require('handlebars'),
   _ = require('lodash'),
   i18n = require('i18next'),
@@ -8,7 +9,8 @@ var http = require('http'),
   config = require('./config'),
   utils = require('./utils'),
   local_config = require('./local_config'),
-  views = __dirname + '/views'
+  views = __dirname + '/views',
+  io
 
 // configuration for 18n
 i18n.init({
@@ -32,13 +34,16 @@ var initiate = function (){
 
   // routes
   index(router)
-  receive(router)
 
-  // start the server
-  var server = http.createServer(router);
-  server.listen(config.SERVER_PORT);
+  // start the web server
+  console.log( chalk.magenta("web serer running at port: " + config.SERVER_PORT ) )
+  var server = http.createServer(router)
+  server.listen(config.SERVER_PORT)
 
-  console.log( chalk.magenta("web serer running at port: " + config.PORT ) )
+  // Start socket.io with not so verbose logging
+  console.log( chalk.gray("initializing socket.io") )
+  global.io = io = socket.listen(server)
+  io.set("log level", 1)
 }
 
 var index = function (router){
@@ -89,5 +94,3 @@ var loadAndCompile = function (filename, callback){
 }
 
 module.exports.initiate = initiate
-
-

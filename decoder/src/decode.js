@@ -1,21 +1,20 @@
 // # Decode
 // main module, where the physical object is translated to a digital image
 
-var http = require('http'),
-  fs = require('fs'),
-  socket = require('socket.io'),
-  child = require('child_process'),
+var fs = require('fs'),
+  io = require('socket.io'),
   five = require('johnny-five'),
-  brain = require('brain'),
   _ = require('lodash'),
   chalk = require('chalk')
 
 // local modules
 var config = require('./config'),
-  utils = require('./utils')
+  utils = require('./utils'),
+  server = require('./server')
 
 // vars to hold the server, Arduino board and socket.io
-var app, board, io
+var app, board,
+  io = global.io
 
 // Hardware variables
 var motor, front,
@@ -31,14 +30,6 @@ var ir_array = {
   M6: {pin: 5, value: null, binary: 0, color: 'red'}
 }
 
-// variables to store data analysis and conversion
-var sensor_lectures = [],
-  max_samples = 20,
-  index = 0,
-  previous_read = null,
-  previous_decode = null,
-  portrait = [],
-  network = new brain.NeuralNetwork()
 
 // state of the system
 var machine_state = {
@@ -49,29 +40,8 @@ var machine_state = {
 //# setup
 // initialize all the environment
 function setup (){
-  // Very simple web server,
-  // in posteriors versions could be replaced with something like Express.js
-  function handler (req, res) {
-    fs.readFile(__dirname + req.url, function (err,data) {
-      if (err) {
-        res.writeHead(404)
-        res.end(JSON.stringify(err))
-        return;
-      }
-      res.writeHead(200)
-      res.end(data)
-    });
-  }
 
-  //Create the web server listening in the port 3000
-  console.log( chalk.gray("initializing webserver") )
-  app = http.createServer(handler)
-  app.listen(config.SERVER_PORT)
-
-  // Start socket.io with not so verbose logging
-  console.log( chalk.gray("initializing socket.io") )
-  io = socket.listen(app)
-  io.set("log level", 1)
+  server.initiate()
 
   // Instantiate the Arduino lib
   console.log( chalk.gray("connecting to hardware") )
@@ -79,32 +49,19 @@ function setup (){
     port: config.SERIAL_PORT,
     repl: false
   })
-
-  // Read the trained network
-  console.log( chalk.gray("loading network file") )
-  fs.readFile(__dirname+'/network/net.json', function (err, data){
-    if(err){
-      utils.onErr('loading network file', err)
-    }
-
-    // translate the input string into a JSON object
-    var json = JSON.parse(data.toString())
-
-    // load the data into the network
-    network.fromJSON(json)
-
-    console.log( chalk.gray("network file succesfully readed") )
-  })
-
-  // Open browser
-
-  child.exec("open http://localhost:3000/views/index.html")
-
 }
+
 
 function main (){
   // # Johnny-five main method
   board.on("ready", function() {
+
+    //inform the client that we have connection with the board
+    global.io.sockets.on('connection', function (socket){
+      socket.emit('board', { status: 'ready' });
+    })
+
+    //server.broadcast('board', { status: 'ready' });
 
     // # Setup board
     // Instantiate the sensor, and configure it to read each 10ms
@@ -165,10 +122,7 @@ function main (){
     //   motor: motor,
     // });
 
-    // inform the client that we have connection with the board
-    io.sockets.on('connection', function (socket){
-      socket.emit('board', { status: 'ready' });
-    })
+
 
     // ### Listen to buttons events
 
@@ -244,76 +198,10 @@ function main (){
     // })
   })
 
-
-
-  // # Interpret
-  // translate the guess obtained from the classifier into the heights
-  // of the object
-  function interpret (data) {
-    switch (true){
-      case data > 0 && data < 0.1:
-        /*console.log("empty")*/
-        buildPortrait(-1)
-        break
-
-      case data > 0.1 && data < 0.2:
-        /*console.log("5mm") //base*/
-        buildPortrait(0)
-        break
-
-      case data > 0.2 && data < 0.4:
-        /*console.log("10mm") //1*/
-        buildPortrait(1)
-        break
-
-      case data > 0.4 && data < 0.5:
-        /*console.log("15mm") //2*/
-        buildPortrait(2)
-        break
-
-      case data > 0.5 && data < 0.7:
-        /*console.log("20mm") //3*/
-        buildPortrait(3)
-        break
-
-      case data > 0.7 && data < 0.8:
-        /*console.log("25mm") //4*/
-        buildPortrait(4)
-        break
-
-      case data > 0.8 && data < 1:
-        /*console.log("30mm") //5*/
-        buildPortrait(5)
-        break
-      /*
-      case data <= 150:
-        console.log("35mm") //6
-        //buildPortrait(6)
-        break
-      */
-      default:
-        console.log( chalk.magenta("unknow data: ", data) )
-        break
-    }
-  }
-
   // # buidPortrait
   // build an array with the translated data
   function buildPortrait (measure) {
-    // if there is a new measure
-    if (previous_decode !== measure) {
-      // ignore empty and 5mm measures
-      if (measure !== -1 && measure !== 0) {
-
-        portrait.push(measure)
-       // console.log("mea",measure)
-        // if (measure === 6) {
-        //   portraitDone(portrait)
-        // };
-      }
-      previous_decode = measure
-    };
-    //console.log(portrait)
+    // somthing will happen here
   }
 
   function portraitDone(data){
