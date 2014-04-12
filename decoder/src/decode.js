@@ -113,7 +113,24 @@ function main (){
       that.pinMode(item.pin, five.Pin.ANALOG)
     })
 
-    this.loop(25, function() {
+    // this.loop(25, function() {
+    //   _.forEach(ir_array, function (item, key){
+    //     that.analogRead(item.pin, function (voltage) {
+    //       item.value = voltage
+    //       if (voltage < 800) {
+    //         item.binary = 0
+    //         item.color = '#7c737c'
+    //       } else{
+    //         item.binary = 1
+    //         item.color = "#1c1a1c"
+    //       }
+    //     })
+    //   })
+    //   io.sockets.emit('measure', ir_array);
+    //   //console.log("ir_array",ir_array)
+    // })
+
+    //this.loop(25, function() {
       _.forEach(ir_array, function (item, key){
         that.analogRead(item.pin, function (voltage) {
           item.value = voltage
@@ -125,10 +142,12 @@ function main (){
             item.color = "#1c1a1c"
           }
         })
+
+        console.log(ir_array)
       })
-      io.sockets.emit('measure', ir_array);
+     // io.sockets.emit('measure', ir_array);
       //console.log("ir_array",ir_array)
-    })
+    //})
 
 
     // crate a new instance of motor

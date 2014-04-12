@@ -42,6 +42,7 @@ program
   .option('-d, --decode', 'Decode a portrait [decode]')
   .option('-l, --learn', 'Prepare data for the classifier')
   .option('-t, --train', 'Train the network')
+  .option('-b, --browser', 'Automatically open the browser')
   .parse(process.argv);
 
 // no options from the command line
@@ -57,4 +58,15 @@ if(program.train){
 if (program.learn) {
   var learn = require('./learn')
   learn.getData()
+}
+
+ // Open browser
+if (program.browser){
+  // check for the platform where is running the soft
+  // to call the default *open* browser command
+  if (process.platform === 'darwing') {
+    child.exec("open http://localhost:3000/views/index.html")
+  } else if (process.platform === 'linux') {
+    child.exec("xdg-open http://localhost:3000/views/index.html")
+  }
 }
