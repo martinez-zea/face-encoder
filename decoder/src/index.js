@@ -25,33 +25,34 @@
 var version = '0.1.0',
   program = require('commander'),
   chalk = require('chalk'),
-  classifier = require('./classifier')
-  decode = require('./decode')
+  classifier = require('./classifier'),
+  decode = require('./decode'),
+  childProcess = require('child_process')
 
 
 // Write banner to the sdout
-console.log( chalk.yellow('-----------------------') )
-console.log( chalk.magenta.bold('** Decoder **') )
-console.log( chalk.magenta('v ' + version) )
-console.log( chalk.yellow('-----------------------') )
+console.log(chalk.yellow('-----------------------'))
+console.log(chalk.magenta.bold('** Decoder **'))
+console.log(chalk.magenta('v ' + version))
+console.log(chalk.yellow('-----------------------'))
 
 
 // Command line options
 program
-  .version(version)
-  .option('-d, --decode', 'Decode a portrait [decode]')
-  .option('-l, --learn', 'Prepare data for the classifier')
-  .option('-t, --train', 'Train the network')
-  .option('-b, --browser', 'Automatically open the browser')
-  .parse(process.argv);
+    .version(version)
+    .option('-d, --decode', 'Decode a portrait [decode]')
+    .option('-l, --learn', 'Prepare data for the classifier')
+    .option('-t, --train', 'Train the network')
+    .option('-b, --browser', 'Automatically open the browser')
+    .parse(process.argv);
 
 // no options from the command line
-if(process.argv.length < 3 || program.decode){
+if (process.argv.length < 3 || program.decode){
   decode.setup()
   decode.main()
 }
 
-if(program.train){
+if (program.train) {
   classifier.train()
 }
 
@@ -61,12 +62,12 @@ if (program.learn) {
 }
 
  // Open browser
-if (program.browser){
+if (program.browser) {
   // check for the platform where is running the soft
   // to call the default *open* browser command
   if (process.platform === 'darwing') {
-    child.exec("open http://localhost:3000/views/index.html")
+      childProcess.exec('open http://localhost:3000/views/index.html')
   } else if (process.platform === 'linux') {
-    child.exec("xdg-open http://localhost:3000/views/index.html")
+      childProcess.exec('xdg-open http://localhost:3000/views/index.html')
   }
 }

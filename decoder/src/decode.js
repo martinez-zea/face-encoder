@@ -1,3 +1,4 @@
+"use strict";
 // # Decode
 // main module, where the physical object is translated to a digital image
 
@@ -13,13 +14,11 @@ var config = require('./config'),
   server = require('./server')
 
 // vars to hold the server, Arduino board and socket.io
-var app, board,
-  io = global.io
+var board
 
 // Hardware variables
 var motor, front,
-  back, start, l0,
-  l1, l2, l3, l4, l5
+  back, start
 
 var ir_array = {
   M1: {pin: 0, value: null, binary: 0, color: 'red'},
@@ -39,7 +38,7 @@ var machine_state = {
 
 //# setup
 // initialize all the environment
-function setup (){
+function setup() {
 
   server.initiate()
 
@@ -52,7 +51,7 @@ function setup (){
 }
 
 
-function main (){
+function main() {
   // # Johnny-five main method
   board.on("ready", function() {
 
@@ -61,7 +60,6 @@ function main (){
       socket.emit('board', { status: 'ready' });
     })
 
-    //server.broadcast('board', { status: 'ready' });
 
     // # Setup board
     // Instantiate the sensor, and configure it to read each 10ms
@@ -87,26 +85,6 @@ function main (){
     //   //console.log("ir_array",ir_array)
     // })
 
-    //this.loop(25, function() {
-      _.forEach(ir_array, function (item, key){
-        that.analogRead(item.pin, function (voltage) {
-          item.value = voltage
-          if (voltage < 800) {
-            item.binary = 0
-            item.color = '#7c737c'
-          } else{
-            item.binary = 1
-            item.color = "#1c1a1c"
-          }
-        })
-
-        console.log(ir_array)
-      })
-     // io.sockets.emit('measure', ir_array);
-      //console.log("ir_array",ir_array)
-    //})
-
-
     // crate a new instance of motor
     motor = new five.Motor({
       pins: { pwm: config.MOTOR_PWM, dir: config.MOTOR_DIRECTION}
@@ -116,12 +94,6 @@ function main (){
     front = new five.Button(config.FRONT_PIN);
     back = new five.Button(config.BACK_PIN);
     start = new five.Button(config.START_PIN);
-
-    // inject data to the REPL
-    // board.repl.inject({
-    //   motor: motor,
-    // });
-
 
 
     // ### Listen to buttons events
@@ -161,41 +133,6 @@ function main (){
       }
     })
 
-    // ## Sensor data
-    // Here is where the magic happens. When a new lecture is received it is
-    // processed first to clean noise from the signal, then, the cleaned data is
-    // analyzed in order to find the information encoded in to the object, finally
-    // the *decoded object* is sent to the client to visualize it.
-    // sensor.scale(0,1).on("data", function() {
-
-    //   utils.digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
-    //     // ask the classifier about the current data
-    //     var guess = network.run([smooth])
-    //     // send the answer to a function to interpret the data
-    //     interpret(guess)
-
-    //     io.sockets.emit('sensor', { raw: raw, smooth: smooth });
-    //   })
-    // });
-
-    // l0.on('data', function(){
-    //   console.log( chalk.red("l0: " + this.boolean) )
-    // })
-    // l1.on('data', function(){
-    //   console.log( chalk.red("l1: " + this.boolean) )
-    // })
-    // l2.on('data', function(){
-    //   console.log( chalk.red("l2: " + this.boolean) )
-    // })
-    // l3.on('data', function(){
-    //   console.log( chalk.red("l3: " + this.boolean) )
-    // })
-    // l4.on('data', function(){
-    //   console.log( chalk.red("l4: " + this.boolean) )
-    // })
-    // l5.on('data', function(){
-    //   console.log( chalk.red("l5: " + this.boolean) )
-    // })
   })
 
   // # buidPortrait
