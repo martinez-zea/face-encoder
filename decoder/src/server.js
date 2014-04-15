@@ -21,24 +21,25 @@ i18n.init({
   resGetPath: __dirname + '/locales/__ns__-__lng__.json'
 })
 
-
-var initiate = function (){
-  var staticFiles = __dirname + '/static'
+function Server () {
+  this.staticFiles = __dirname + '/static'
 
   // instantiate the router
-  var router = new Router({
+  this.router = new Router({
     logging: false,
     log: console.log,
-    static_route: staticFiles,
+    static_route: this.staticFiles,
     serve_static: true
   })
+}
 
+Server.prototype.initiate = function (){
   // routes
-  index(router)
+  this.index(this.router)
 
   // start the web server
   console.log( chalk.magenta('web serer running at port: ' + config.SERVER_PORT ) )
-  var server = http.createServer(router)
+  var server = http.createServer(this.router)
   server.listen(config.SERVER_PORT)
 
   // Start socket.io with not so verbose logging
@@ -47,7 +48,21 @@ var initiate = function (){
   io.set('log level', 1)
 }
 
-var index = function (router){
+Server.sendResponse = function (res, data, params){
+  res.end(data(params))
+}
+
+Server.loadAndCompile = function (filename, callback){
+  fs.readFile(filename, 'utf8', function (err, data) {
+      if (err) {
+        utils.onErr('Ups! error opening file: ' + filename + ' : ' + err)
+        callback(null, err)
+      }
+      callback(hbs.compile(data), null)
+    });
+}
+
+Server.prototype.index = function (router){
 
   router.get('/', function (req, res) {
     console.log( chalk.gray('get /') )
@@ -70,30 +85,15 @@ var index = function (router){
       instructions: i18n.t('instructions')
     }
 
-    loadAndCompile(views+'/base.html', function(data, err){
+    Server.loadAndCompile(views+'/base.html', function(data, err){
       if (err) {
         utils.onErr('compiling base', err)
       } else{
-        sendResponse(res, data, params)
+        Server.sendResponse(res, data, params)
       }
     })
   })
 }
 
 
-var sendResponse = function (res, data, params){
-  res.end(data(params))
-}
-
-var loadAndCompile = function (filename, callback){
-  fs.readFile(filename, 'utf8', function (err, data) {
-      if (err) {
-        utils.onErr('Ups! error opening file: ' + filename + ' : ' + err)
-        callback(null, err)
-      }
-
-      callback(hbs.compile(data), null)
-    });
-}
-
-module.exports.initiate = initiate
+module.exports = Server

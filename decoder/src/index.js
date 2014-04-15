@@ -27,6 +27,7 @@ var version = '0.1.0',
   chalk = require('chalk'),
   classifier = require('./classifier'),
   decode = require('./decode'),
+  Server = require('./server'),
   childProcess = require('child_process')
 
 
@@ -44,6 +45,7 @@ program
     .option('-l, --learn', 'Prepare data for the classifier')
     .option('-t, --train', 'Train the network')
     .option('-b, --browser', 'Automatically open the browser')
+    .option('-s, --server', 'Start the web and socket server')
     .parse(process.argv);
 
 // no options from the command line
@@ -61,7 +63,13 @@ if (program.learn) {
   learn.getData()
 }
 
- // Open browser
+// Initialize server
+if (program.server) {
+  var server = new Server()
+  server.initiate()
+}
+
+// Open browser
 if (program.browser) {
   // check for the platform where is running the soft
   // to call the default *open* browser command
