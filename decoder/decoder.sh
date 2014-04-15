@@ -1,8 +1,7 @@
 #!/bin/bash
 
-ROOT=$(pwd)
 NODE=$(which node)
-SCRIPT=src/index.js
+SCRIPT=/home/pi/face-encoder/src/index.js
 OPTS=s
 
-$NODE $ROOT/$SCRIPT -$OPTS
+$NODE $SCRIPT -$OPTS
