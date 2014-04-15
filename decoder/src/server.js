@@ -71,11 +71,13 @@ var index = function (router){
     }
 
     loadAndCompile(views+'/base.html', function(data, err){
-      sendResponse(res, data, params)
+      if (err) {
+        utils.onErr('compiling base', err)
+      } else{
+        sendResponse(res, data, params)
+      }
     })
-
-
-    })
+  })
 }
 
 
@@ -86,7 +88,7 @@ var sendResponse = function (res, data, params){
 var loadAndCompile = function (filename, callback){
   fs.readFile(filename, 'utf8', function (err, data) {
       if (err) {
-        utils.onErr('Ups! error opening file: ' + filename + " : " + err)
+        utils.onErr('Ups! error opening file: ' + filename + ' : ' + err)
         callback(null, err)
       }
 

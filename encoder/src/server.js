@@ -1,3 +1,5 @@
+'use strict';
+
 var http = require('http'),
   fs = require('fs'),
   Router = require('node-simple-router'),
@@ -21,7 +23,7 @@ i18n.init({
 
 // # Email configuration
 // basic settings for a SMTP server
-var transport = nodemailer.createTransport("SMTP", {
+var transport = nodemailer.createTransport('SMTP', {
     host: local_config.EMAIL_HOST,
     auth: {
         user: local_config.EMAIL_USER,
@@ -49,13 +51,13 @@ var initiate = function (){
   var server = http.createServer(router);
   server.listen(config.PORT);
 
-  console.log( chalk.magenta("web serer running at port: " + config.PORT ) )
+  console.log( chalk.magenta('web serer running at port: ' + config.PORT ) )
 }
 
 var index = function (router){
 
-  router.get("/", function (req, res) {
-    console.log( chalk.gray("get /") )
+  router.get('/', function (req, res) {
+    console.log( chalk.gray('get /') )
 
     var params = {
       title: i18n.t('title'),
@@ -76,7 +78,11 @@ var index = function (router){
     }
 
     loadAndCompile(views+'/base.html', function(data, err){
-      sendResponse(res, data, params)
+      if (err) {
+        utils.onErr('Compiling base', err)
+      } else{
+        sendResponse(res, data, params)
+      }
     })
 
 
@@ -87,7 +93,7 @@ var index = function (router){
 // get user data from the client, compile an email and send it
 var receive = function (router){
   router.post('/userDone', function (req, res){
-    console.log( chalk.gray("post /receive") )
+    console.log( chalk.gray('post /receive') )
 
     // data for the template
     var params = {
@@ -100,7 +106,11 @@ var receive = function (router){
 
     //compile and send the email
     loadAndCompile(views+'/email.html', function (data, err){
-      sendEmail(req.post.email, data(params), __dirname+'/portraits/16/test.png')
+      if (err) {
+        utils.onErr('compiling email', err)
+      } else{
+        sendEmail(req.post.email, data(params), __dirname+'/portraits/16/test.png')
+      }
     })
 
     res.end('ok')
@@ -118,7 +128,7 @@ var sendEmail = function (to, body, img_path){
     to: to,
     html: body,
     //forceEmbeddedImages: true,
-    //filename: "portrait.png",
+    //filename: 'portrait.png',
     filePath: img_path,
     cid:'portrait@decod.er'
   }
@@ -128,7 +138,7 @@ var sendEmail = function (to, body, img_path){
       if(err){
           utils.onErr('sending mail', err)
       }else{
-        console.log( chalk.gray("Message sent: " + response.message) )
+        console.log( chalk.gray('Message sent: ' + response.message) )
       }
       // shutdown the connection
       transport.close()
@@ -142,7 +152,7 @@ var sendResponse = function (res, data, params){
 var loadAndCompile = function (filename, callback){
   fs.readFile(filename, 'utf8', function (err, data) {
       if (err) {
-        utils.onErr('Ups! error opening file: ' + filename + " : " + err)
+        utils.onErr('Ups! error opening file: ' + filename + ' : ' + err)
         callback(null, err)
       }
 

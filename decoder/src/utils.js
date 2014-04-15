@@ -1,3 +1,5 @@
+'use strict';
+
 var config = require('./config'),
   _ = require('lodash'),
   chalk = require('chalk')
@@ -49,14 +51,14 @@ function digitalSmooth (rawIn, rawArray, callback) {
   if (smoothed) {
     // return the cleaned data
     callback(smoothed, rawIn)
-  };
+  }
 }
 
 
 // # OnErr
 // Write errors to sdout
 function onErr(where, err) {
-  console.log( chalk.red.bold("Error on >>", where))
+  console.log( chalk.red.bold('Error on >>', where))
   console.log(chalk.red(err))
   return 1;
 }

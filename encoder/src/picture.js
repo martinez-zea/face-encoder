@@ -1,3 +1,4 @@
+'use strict';
 // # Picture
 // This module process the given image to search a face, then manipulates the
 // image in order to generate a new one with reduced size and palette
@@ -5,7 +6,7 @@
 // The face recognition uses Opencv and the image manipulation is done via
 // graphicsmagick
 var gm = require('gm'),
-  cv = require('opencv')
+  cv = require('opencv'),
   fs = require('fs'),
   chalk = require('chalk'),
   config = require('./config'),
@@ -40,7 +41,7 @@ var produceThumb = function (input, ouput, width, height, x, y){
       if (err){
         utils.onErr('saving file ', err)
       }
-      console.log( chalk.green("Image " + input + " sucessfully cropped") )
+      console.log( chalk.green('Image ' + input + ' sucessfully cropped') )
   });
 
 }
@@ -60,9 +61,9 @@ var findFace = function (input, ouput){
     im.detectObject(cv.FACE_CASCADE, {min:[100,100]}, function(err, faces){
       // we only need one face
       if (faces.length > 1){
-        console.log( chalk.red.bold("Found more than ONE face") )
+        console.log( chalk.red.bold('Found more than ONE face') )
       } else if (faces.length === 0){
-        console.log( chalk.red.bold("ZERO faces found :( ") )
+        console.log( chalk.red.bold('ZERO faces found :( ') )
       } else if (faces.length === 1){
         // chache the data
         var face = faces[0]

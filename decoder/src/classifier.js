@@ -1,9 +1,10 @@
+'use strict';
 // # Classifier
 // Implement a neural network (provided by ```brain```) in order to guess the
 // size of each block of the object
 //
 // dependences
-var brain = require("brain"),
+var brain = require('brain'),
   chalk = require('chalk'),
   fs = require('fs'),
   utils = require('./utils'),
@@ -39,8 +40,8 @@ var heightClassifier = new brain.NeuralNetwork()
 var train = function () {
   // concatenate all the arrays
   var samples = empty.concat(five, ten, fiveteen, twenty, twenty_five, thirty)
-  console.log("id",samples)
-  console.log( chalk.green("learning time: ") )
+  console.log('id',samples)
+  console.log( chalk.green('learning time: ') )
 
   // start measuring execution time
   console.time('train')
@@ -68,7 +69,7 @@ var train = function () {
       }
 
       // if OK then restart process
-      console.log( chalk.green("Successfully saved network to file") );
+      console.log( chalk.green('Successfully saved network to file') )
   });
 
 }
@@ -78,7 +79,7 @@ var train = function () {
 // execute a query to the network
 var guess = function (data){
 
-  console.log( chalk.green("querying time: ") )
+  console.log( chalk.green('querying time: ') )
 
   // start measuring execution timer
   console.time('train')

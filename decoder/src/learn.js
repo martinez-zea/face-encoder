@@ -1,3 +1,4 @@
+'use strict';
 // # Learn
 // write a file with data to train the classifier.
 // Right now its a little buggy because a crash with the injected johnny-five
@@ -54,7 +55,7 @@ var getData = function () {
   })
 
   // when the board is ready
-  board.on("ready", function() {
+  board.on('ready', function() {
 
     // Instantiate the sensor, and configure it to read each 10ms
     sensor = new five.Sensor({
@@ -63,7 +64,7 @@ var getData = function () {
     });
 
     // tell the user we are ready
-    console.log(chalk.gray("Ready to take samples"))
+    console.log(chalk.gray('Ready to take samples'))
 
     // call ```ask()```
     ask()
@@ -74,15 +75,15 @@ var getData = function () {
 // handle user input and call the function to write to a file
 function ask(){
   // print out the question
-  console.log(chalk.cyan("Height to sample: "))
-  console.log(chalk.gray("0 --> empty"))
-  console.log(chalk.gray("1 --> 5mm"))
-  console.log(chalk.gray("2 --> 10mm"))
-  console.log(chalk.gray("3 --> 15mm"))
-  console.log(chalk.gray("4 --> 20mm"))
-  console.log(chalk.gray("5 --> 25mm"))
-  console.log(chalk.gray("6 --> 30mm"))
-  //console.log(chalk.gray("7 --> 35mm"))
+  console.log(chalk.cyan('Height to sample: '))
+  console.log(chalk.gray('0 --> empty'))
+  console.log(chalk.gray('1 --> 5mm'))
+  console.log(chalk.gray('2 --> 10mm'))
+  console.log(chalk.gray('3 --> 15mm'))
+  console.log(chalk.gray('4 --> 20mm'))
+  console.log(chalk.gray('5 --> 25mm'))
+  console.log(chalk.gray('6 --> 30mm'))
+  //console.log(chalk.gray('7 --> 35mm'))
 
   // when have input from user
   prompt.get(['number'], function(err, result){
@@ -110,7 +111,7 @@ function ask(){
 // read, clean and store the data from the sensor
 function doit(sample){
   // when have data from the sensor
-  sensor.scale(0,1).on("data", function() {
+  sensor.scale(0,1).on('data', function() {
     if (reading){
       //clean the signal
       utils.digitalSmooth(this.value, sensor_lectures, function(smooth, raw){
@@ -122,7 +123,7 @@ function doit(sample){
             var read = {input: [smooth], output: [height[sample]]}
             samples.push(JSON.stringify(read))
 
-            //console.log(".")
+            //console.log('.')
 
             // remember the last reading
             previous = smooth
@@ -141,7 +142,7 @@ function doit(sample){
               }
 
               // if OK then restart process
-              console.log( chalk.green("Successfully saved ", sample) );
+              console.log( chalk.green('Successfully saved ', sample) );
               //empty the array
               samples = []
               // reset flag

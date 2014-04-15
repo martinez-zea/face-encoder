@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 // # Decode
 // main module, where the physical object is translated to a digital image
 
@@ -43,7 +43,7 @@ function setup() {
   server.initiate()
 
   // Instantiate the Arduino lib
-  console.log( chalk.gray("connecting to hardware") )
+  console.log( chalk.gray('connecting to hardware') )
   board = new five.Board({
     port: config.SERIAL_PORT,
     repl: false
@@ -53,7 +53,7 @@ function setup() {
 
 function main() {
   // # Johnny-five main method
-  board.on("ready", function() {
+  board.on('ready', function() {
 
     //inform the client that we have connection with the board
     global.io.sockets.on('connection', function (socket){
@@ -77,12 +77,12 @@ function main() {
     //         item.color = '#7c737c'
     //       } else{
     //         item.binary = 1
-    //         item.color = "#1c1a1c"
+    //         item.color = '#1c1a1c'
     //       }
     //     })
     //   })
     //   io.sockets.emit('measure', ir_array);
-    //   //console.log("ir_array",ir_array)
+    //   //console.log('ir_array',ir_array)
     // })
 
     // crate a new instance of motor
@@ -99,8 +99,8 @@ function main() {
     // ### Listen to buttons events
 
     // Button that controls the initiate of the process
-    start.on("down", function() {
-      console.log("start pressed")
+    start.on('down', function() {
+      console.log('start pressed')
 
       // if we are not in the middle of a process
       if (!machine_state.SCANNING){
@@ -111,8 +111,8 @@ function main() {
     })
 
     // the object reached the front limit
-    front.on("down", function() {
-      console.log("front reached")
+    front.on('down', function() {
+      console.log('front reached')
 
       // verify that the process is on going
       if (!machine_state.SCANNING) {
@@ -121,8 +121,8 @@ function main() {
     })
 
     // back to home, ready to start again
-    back.on("down", function() {
-      console.log("back reached")
+    back.on('down', function() {
+      console.log('back reached')
 
       // again verify that its doing something
       if (!machine_state.SCANNING) {
@@ -142,7 +142,7 @@ function main() {
   }
 
   function portraitDone(data){
-    console.log("portrait",data)
+    console.log('portrait',data)
   }
 }
 

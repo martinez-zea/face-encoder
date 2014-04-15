@@ -1,3 +1,4 @@
+'use strict';
 // # Portrait
 // this module reads the pixel data from the given image to extract the data and
 // return it in an array
@@ -28,7 +29,7 @@ var extract = function (input, callback) {
                 portrait.push(this.data[idx])
             }
         }
-        console.log( chalk.green("Image color extraction done! ") )
+        console.log( chalk.green('Image color extraction done! ') )
         // return the data when done
         callback(portrait)
     });
