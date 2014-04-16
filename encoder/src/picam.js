@@ -2,25 +2,29 @@
 
 // #Picam
 // interact with the raspberry camera
-var RaspiCam = require('raspicam'),
-  camera = new RaspiCam({
-    mode: 'photo',
-    encoding: 'png',
-    output: 'static/img/test.png',
-    timeout: 0,
-    nopreview: true
-  })
+var RaspiCam = require('raspicam')
 
-camera.on('started', function( err, timestamp ){
-  console.log('photo started at ' + timestamp );
-});
+var Shutter = {
+  camera: null,
 
-camera.on('read', function( err, timestamp, filename ){
-  console.log('photo image captured with filename: ' + filename );
-});
+  setup: function (filename) {
+    this.camera = new RaspiCam({
+      mode: 'photo',
+      encoding: 'png',
+      output: __dirname+'/static/img/'+filename,
+      timeout: 0,
+      nopreview: true
+    })
+  },
 
-camera.on('exit', function( timestamp ){
-  console.log('photo child process has exited at ' + timestamp );
-});
+  click: function(){
+    this.camera.start()
+  },
 
-camera.start();
+  off: function (){
+    this.camera.stop()
+  },
+
+}
+
+module.exports.shutter = Shutter
