@@ -8,7 +8,8 @@ var http = require('http'),
   config = require('./config'),
   utils = require('./utils'),
   local_config = require('./local_config'),
-  views = __dirname + '/views'
+  views = __dirname + '/views',
+  logger = require('./logger')
 
 // configuration for 18n
 i18n.init({
@@ -38,7 +39,7 @@ Webserver.prototype.run = function() {
   this.server = http.createServer(this.router);
   this.server.listen(config.PORT);
 
-  console.log( chalk.magenta('web server running at port: ' + config.PORT ) )
+  logger.log('info', 'web server running at port: ' + config.PORT)
 }
 
 Webserver.prototype.index = function() {
