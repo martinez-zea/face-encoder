@@ -48,7 +48,7 @@ Webserver.prototype.run = function() {
 
   logger.log('info', 'web server running at port: ' + config.PORT)
 
-  io = socket.listen(this.Sserver)
+  io = socket.listen(this.server)
   io.set('log level', 1)
 
 }
@@ -124,8 +124,6 @@ Webserver.prototype.picture = function() {
     var picam = new Picam(uuid+'.png')
 
     picam.click()
-
-    picam.stop()
 
     res.end('OK')
   })
