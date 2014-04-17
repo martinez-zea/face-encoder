@@ -29,7 +29,7 @@ $(function () {
     $(this).fadeOut('fast')
     var overlay = $('#overlay')
 
-    $(overlay).fadeIn()
+    $(overlay).fadeIn('fast')
 
     var max = 3
     var timer = $.timer(function(){
@@ -47,10 +47,10 @@ $(function () {
 
         $(overlay).animate({ backgroundColor: '#fff' }, 'fast');
         $(overlay).fadeOut()
+
+        $('#picture_instruction').text('esta bien?')
         timer.stop()
       }
     }, 1000, true)
-
-
   })
 })

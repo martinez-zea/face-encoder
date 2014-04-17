@@ -24,7 +24,7 @@ var gm = require('gm'),
 // @x: x values of the top corner of face
 // @y: y values of the top corner of face
 // ```
-var produceThumb = function (input, ouput, width, height, x, y){
+var produceThumb = function (input, ouput, width, height, x, y, callback){
   //initiate gm
   gm(input)
     // crop the image
@@ -40,8 +40,10 @@ var produceThumb = function (input, ouput, width, height, x, y){
     .write(ouput, function (err) {
       if (err){
         utils.onErr('saving file ', err)
+        callback(err)
       }
       console.log( chalk.green('Image ' + input + ' sucessfully cropped') )
+      callback(null)
   });
 
 }
@@ -54,11 +56,11 @@ var produceThumb = function (input, ouput, width, height, x, y){
 // @input: input file
 // @output: output file
 // ```
-var findFace = function (input, ouput){
+var findFace = function (input, ouput, callback){
   // plug the image to openCV
   cv.readImage(input, function(err, im){
     // run the detector
-    im.detectObject(cv.FACE_CASCADE, {min:[100,100]}, function(err, faces){
+    im.detectObject(cv.FACE_CASCADE, {min:[40,40]}, function(err, faces){
       // we only need one face
       if (faces.length > 1){
         console.log( chalk.red.bold('Found more than ONE face') )
@@ -68,7 +70,7 @@ var findFace = function (input, ouput){
         // chache the data
         var face = faces[0]
         // call the function to produce the final image
-        produceThumb(input, ouput, face.height, face.height, face.x, face.y)
+        produceThumb(input, ouput, face.height, face.height, face.x, face.y, callback)
       }
     });
   })

@@ -12,6 +12,7 @@ var http = require('http'),
   logger = require('./logger'),
   Database = require('./database'),
   Picam = require('./picam'),
+  picture = require('./picture'),
   io
 
 // configuration for 18n
@@ -120,15 +121,21 @@ Webserver.prototype.picture = function() {
   this.router.get('/picture', function (req, res){
     logger.log('info', 'webserver GET /picture')
 
+    var dir = __dirname+'/static/img/'
     var uuid = utils.guid()
-    var filename = uuid+'.png'
+    var orig = uuid+'.png'
+    var face = uuid+'_face.png'
 
-    var picam = new Picam(filename, function (err){
+    var picam = new Picam(orig, function (err){
         if(err){
           utils.onErr('shutting', err)
           res.end('Error 500')
         } else {
-          res.end(filename)
+          picture.findFace( dir+orig, dir+face, function (err){
+            if(!err){
+              res.end(filename)
+            }
+          })
         }
     })
   })
