@@ -28,7 +28,9 @@ function Webserver () {
     static_route: this.static_files,
     serve_static: true
   })
+}
 
+Webserver.prototype.run = function() {
   this.index()
   this.receive()
 

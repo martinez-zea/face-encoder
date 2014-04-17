@@ -43,4 +43,5 @@ if (program.portrait) {
 
 if (program.server){
   var server = new Server()
+  server.run()
 }
