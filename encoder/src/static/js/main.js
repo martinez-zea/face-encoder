@@ -11,11 +11,6 @@ $(function () {
 
     autoFocus: false,
 
-    // onFinishing: function (event, currentIndex){
-    //   console.log("almost done")
-    //   re
-    // },
-
     onFinished: function(event, currentIndex){
 
       var user = {
@@ -26,7 +21,18 @@ $(function () {
       $.post('/userDone', user, function(data){
         console.log("data",data)
       })
+    },
 
+    onStepChanged: function(event, currentIndex ){
+      if (currentIndex === 3) {
+        console.info('step 3 : picture')
+
+        // inform that its time to init camera
+        $.get('/picture', function (data){
+          console.info('get query done: ', data);
+        })
+      }
     }
-  });
-});
+
+  })
+})

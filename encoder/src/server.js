@@ -9,7 +9,8 @@ var http = require('http'),
   local_config = require('./local_config'),
   views = __dirname + '/views',
   logger = require('./logger'),
-  Database = require('./database')
+  Database = require('./database'),
+  Picam = require('./picam')
 
 // configuration for 18n
 i18n.init({
@@ -34,8 +35,10 @@ function Webserver () {
 }
 
 Webserver.prototype.run = function() {
+  // setup routes
   this.index()
   this.receive()
+  this.picture()
 
   // start the server
   this.server = http.createServer(this.router);
@@ -104,8 +107,21 @@ Webserver.prototype.receive = function() {
         res.end(JSON.stringify(newDoc))
       }
     })
+  })
+}
 
+Webserver.prototype.picture = function() {
+  this.router.get('/picture', function (req, res){
+    logger.log('info', 'webserver GET /picture')
 
+    var uuid = utils.guid()
+    var picam = new Picam(uuid+'.png')
+
+    picam.click()
+
+    picam.stop()
+
+    res.end('OK')
   })
 }
 

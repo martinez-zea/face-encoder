@@ -4,11 +4,7 @@
 // interact with the raspberry camera
 var RaspiCam = require('raspicam')
 
-function Shutter (){
-  this.camera = null
-}
-
-Shutter.prototype.setup = function(filename) {
+function Shutter (filename){
   this.camera = new RaspiCam({
     mode: 'photo',
     encoding: 'png',
