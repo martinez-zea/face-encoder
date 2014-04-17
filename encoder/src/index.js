@@ -8,7 +8,7 @@ var program = require('commander'),
 
 var picture = require('./picture'),
   portrait = require('./portrait'),
-  server = require('./server')
+  Server = require('./server')
 
 
 program
@@ -42,5 +42,5 @@ if (program.portrait) {
 }
 
 if (program.server){
-  server.initiate()
+  var server = new Server()
 }

@@ -1,13 +1,10 @@
 'use strict';
 
 var http = require('http'),
-  fs = require('fs'),
   Router = require('node-simple-router'),
-  hbs = require('handlebars'),
-  nodemailer = require('nodemailer'),
-  _ = require('lodash'),
   i18n = require('i18next'),
   chalk = require('chalk'),
+  Template = require('./template'),
   config = require('./config'),
   utils = require('./utils'),
   local_config = require('./local_config'),
@@ -21,42 +18,29 @@ i18n.init({
   resGetPath: __dirname + '/locales/__ns__-__lng__.json'
 })
 
-// # Email configuration
-// basic settings for a SMTP server
-var transport = nodemailer.createTransport('SMTP', {
-    host: local_config.EMAIL_HOST,
-    auth: {
-        user: local_config.EMAIL_USER,
-        pass: local_config.EMAIL_PASS
-    }
-});
-
-
-var initiate = function (){
-  var static_files = __dirname + '/static'
+function Webserver () {
+   this.static_files = __dirname + '/static'
 
   // instantiate the router
-  var router = new Router({
+  this.router = new Router({
     logging: false,
     log: console.log,
-    static_route: static_files,
+    static_route: this.static_files,
     serve_static: true
   })
 
-  // routes
-  index(router)
-  receive(router)
+  this.index()
+  this.receive()
 
   // start the server
-  var server = http.createServer(router);
-  server.listen(config.PORT);
+  this.server = http.createServer(this.router);
+  this.server.listen(config.PORT);
 
-  console.log( chalk.magenta('web serer running at port: ' + config.PORT ) )
+  console.log( chalk.magenta('web server running at port: ' + config.PORT ) )
 }
 
-var index = function (router){
-
-  router.get('/', function (req, res) {
+Webserver.prototype.index = function() {
+  this.router.get('/', function (req, res) {
     console.log( chalk.gray('get /') )
 
     var params = {
@@ -77,89 +61,29 @@ var index = function (router){
       instructions: i18n.t('instructions')
     }
 
-    loadAndCompile(views+'/base.html', function(data, err){
-      if (err) {
-        utils.onErr('Compiling base', err)
-      } else{
-        sendResponse(res, data, params)
-      }
+    var template = new Template(views+'/base.html')
+    template.compile(function (err, data){
+        if(err){
+          utils.onErr('Compiling base', err)
+        } else {
+          res.end(data(params))
+        }
     })
+  })
+};
 
-
-    })
-}
-
-// # receive
-// get user data from the client, compile an email and send it
-var receive = function (router){
-  router.post('/userDone', function (req, res){
+Webserver.prototype.receive = function() {
+  this.router.post('/userDone', function (req, res){
     console.log( chalk.gray('post /receive') )
 
-    // data for the template
-    var params = {
-      username: req.post.username,
-      hello: i18n.t('email_hello'),
-      body: i18n.t('email_body'),
-      information: i18n.t('email_information'),
-      bye: i18n.t('email_bye')
-    }
-
-    //compile and send the email
-    loadAndCompile(views+'/email.html', function (data, err){
-      if (err) {
-        utils.onErr('compiling email', err)
-      } else{
-        sendEmail(req.post.email, data(params), __dirname+'/portraits/16/test.png')
-      }
-    })
+    // req.post.email
+    // req.post.username
 
     res.end('ok')
   })
 }
 
-// # SendEmail
-var sendEmail = function (to, body, img_path){
 
-  // envelope
-  // TODO: review attachments
-  var mailOptions = {
-    from: local_config.EMAIL_FROM,
-    subject: i18n.t('email_subject'),
-    to: to,
-    html: body,
-    //forceEmbeddedImages: true,
-    //filename: 'portrait.png',
-    filePath: img_path,
-    cid:'portrait@decod.er'
-  }
-
-  // send mail with defined transport object
-  transport.sendMail(mailOptions, function (err, response){
-      if(err){
-          utils.onErr('sending mail', err)
-      }else{
-        console.log( chalk.gray('Message sent: ' + response.message) )
-      }
-      // shutdown the connection
-      transport.close()
-  });
-}
-
-var sendResponse = function (res, data, params){
-  res.end(data(params))
-}
-
-var loadAndCompile = function (filename, callback){
-  fs.readFile(filename, 'utf8', function (err, data) {
-      if (err) {
-        utils.onErr('Ups! error opening file: ' + filename + ' : ' + err)
-        callback(null, err)
-      }
-
-      callback(hbs.compile(data), null)
-    });
-}
-
-module.exports.initiate = initiate
+module.exports = Webserver
 
 
