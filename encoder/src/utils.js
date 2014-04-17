@@ -1,12 +1,12 @@
 'use strict';
 
-var chalk = require('chalk')
+var logger = require('./logger')
 
 // # OnErr
 // Write errors to sdout
 var onErr = function (where, err) {
-  console.log( chalk.red.bold('Error on >>', where))
-  console.log(chalk.red(err))
+  logger.log('err', 'Error on >> '+ where)
+  logger.log('err', 'traceback: ' + err)
   return 1;
 }
 
