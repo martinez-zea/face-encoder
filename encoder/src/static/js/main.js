@@ -27,8 +27,8 @@ $(function () {
 
   $('#shutter').click(function(){
     $(this).fadeOut('fast')
-    var overlay = $('#overlay')
 
+    var overlay = $('#overlay')
     $(overlay).fadeIn('fast')
 
     var max = 3
@@ -41,14 +41,20 @@ $(function () {
       if (max <= 0){
         // inform that its time to init camera
         $.get('/picture', function (data){
-          console.info('get query done: ', data);
-          $('#picture').html('<img src="/img/'+data+'">')
+          if (data.error){
+            console.log(data.error)
+          } else {
+            $('#picture_instruction').text('resultado')
+            $('#picture').html('<img src="/img/'+data.face+'">')
+          }
         })
 
         $(overlay).animate({ backgroundColor: '#fff' }, 'fast');
         $(overlay).fadeOut()
 
-        $('#picture_instruction').text('esta bien?')
+        $('#picture_instruction').text('procesando')
+        $('#picture').spin('large', '#000000')
+
         timer.stop()
       }
     }, 1000, true)

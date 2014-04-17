@@ -25,6 +25,7 @@
     "jquery": "~2.1.0",
     "bootstrap": "~3.1.1",
     "jquery-timer": "https://github.com/jchavannes/jquery-timer.git",
-    "jquery-color": "https://github.com/jquery/jquery-color.git#~2.1.2"
+    "jquery-color": "https://github.com/jquery/jquery-color.git#~2.1.2",
+    "spin.js": "~2.0.0"
   }
 }

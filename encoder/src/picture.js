@@ -10,7 +10,8 @@ var gm = require('gm'),
   fs = require('fs'),
   chalk = require('chalk'),
   config = require('./config'),
-  utils = require('./utils')
+  utils = require('./utils'),
+  logger = require('./logger')
 
 // #ProduceThumb
 // reduce and crop the given image
@@ -42,7 +43,7 @@ var produceThumb = function (input, ouput, width, height, x, y, callback){
         utils.onErr('saving file ', err)
         callback(err)
       }
-      console.log( chalk.green('Image ' + input + ' sucessfully cropped') )
+      logger.log('info', 'Image ' + input + ' sucessfully cropped')
       callback(null)
   });
 
@@ -63,9 +64,11 @@ var findFace = function (input, ouput, callback){
     im.detectObject(cv.FACE_CASCADE, {min:[40,40]}, function(err, faces){
       // we only need one face
       if (faces.length > 1){
-        console.log( chalk.red.bold('Found more than ONE face') )
+        callback('more than one face')
+        logger.log('info', 'Found more than ONE face')
       } else if (faces.length === 0){
-        console.log( chalk.red.bold('ZERO faces found :( ') )
+        callback('no face')
+        logger.log('ZERO faces found :( ')
       } else if (faces.length === 1){
         // chache the data
         var face = faces[0]

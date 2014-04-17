@@ -132,9 +132,21 @@ Webserver.prototype.picture = function() {
           res.end('Error 500')
         } else {
           picture.findFace( dir+orig, dir+face, function (err){
-            if(!err){
-              res.end(filename)
+            if(err){
+              data = {
+                error: err,
+                orig: null,
+                face: null
+              }
+              res.end(data)
             }
+
+            data = {
+                error: null,
+                orig: orig,
+                face: face
+              }
+              res.end(data)
           })
         }
     })
