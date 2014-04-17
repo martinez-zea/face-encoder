@@ -19,23 +19,14 @@
 
     </head>
     <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">{{title}}</a>
-        </div>
+    <div class="row" id="title">
+      <div class="col-md-12">
+        <h1>{{title}}</h1>
       </div>
     </div>
+    <div class="row">
 
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
+      <div class="col-md-10 col-md-offset-1">
 
         <div id="wizard">
           <h1>{{first_step_title}}</h1>
@@ -60,13 +51,15 @@
           <div>done</div>
         </div>
       </div>
-
-      <hr>
-
-      <footer>
-        <p>{{instructions}}</p>
-      </footer>
     </div> <!-- /container -->
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <footer>
+          <p>{{instructions}}</p>
+        </footer>
+      </div>
+    </div>
+
       <script src="js/vendor/jquery/dist/jquery.js"></script>
       <script src="js/vendor/bootstrap/dist/js/bootstrap.js"></script>
       <script src="js/vendor/jquery-steps/build/jquery.steps.min.js"></script>
