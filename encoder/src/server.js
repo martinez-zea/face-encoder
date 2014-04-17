@@ -9,7 +9,8 @@ var http = require('http'),
   utils = require('./utils'),
   local_config = require('./local_config'),
   views = __dirname + '/views',
-  logger = require('./logger')
+  logger = require('./logger'),
+  Database = require('./database')
 
 // configuration for 18n
 i18n.init({
@@ -29,6 +30,8 @@ function Webserver () {
     static_route: this.static_files,
     serve_static: true
   })
+
+  this.database = new Database(__dirname + '/static/users.db')
 }
 
 Webserver.prototype.run = function() {
@@ -44,7 +47,7 @@ Webserver.prototype.run = function() {
 
 Webserver.prototype.index = function() {
   this.router.get('/', function (req, res) {
-    console.log( chalk.gray('get /') )
+    logger.log('info', 'webserver GET /')
 
     var params = {
       title: i18n.t('title'),
@@ -76,16 +79,29 @@ Webserver.prototype.index = function() {
 };
 
 Webserver.prototype.receive = function() {
+  var self = this
+
   this.router.post('/userDone', function (req, res){
-    console.log( chalk.gray('post /receive') )
+    logger.log('info', 'webserver POST /userDone')
 
-    // req.post.email
-    // req.post.username
+    // TODO: attach image and svg
+    var doc = {
+      username: req.post.username,
+      email: req.post.email,
+      status: 'wating'
+    }
 
-    res.end('ok')
+    self.database.insert(doc, function (err, newDoc){
+      if (err) {
+        res.end('ERROR 500 : ' + err )
+      } else{
+        res.end(JSON.stringify(newDoc))
+      }
+    })
+
+
   })
 }
-
 
 module.exports = Webserver
 
