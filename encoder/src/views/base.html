@@ -28,6 +28,7 @@
 
     </head>
     <body>
+    <div id="overlay"></div>
     <div class="row" id="title">
       <div class="col-md-12">
         <h1>{{title}}</h1>
@@ -70,6 +71,11 @@
             <div class="col-md-10 instruction">
               {{picture_instruction}}
             </div>
+            <div id="picture" class="col-md-10">
+              <button id="shutter" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-camera"></span>
+              </button>
+            </div>
           </div>
 
           <h1>{{five_step_title}}</h1>
@@ -93,6 +99,8 @@
       <script src="js/vendor/jquery/dist/jquery.js"></script>
       <script src="js/vendor/bootstrap/dist/js/bootstrap.js"></script>
       <script src="js/vendor/jquery-steps/build/jquery.steps.min.js"></script>
+      <script src="js/vendor/jquery-timer/jquery.timer.js"></script>
+      <script src="js/vendor/jquery-color/jquery.color.js"></script>
 
       <script src="js/main.js"></script>
     </body>

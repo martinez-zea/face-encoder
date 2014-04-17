@@ -10,7 +10,7 @@
   "first_content": "en este modulo podrás generar los archivos necesarios para la producción de tu retrato codificado, para iniciar hacé click en el botón de la parte inferior y seguí las instrucciones",
   "name_instruction": "ingresá tu nombre",
   "email_instruction": "ingresá tu e-mail",
-  "picture_instruction": "voy a tomar una fotografia ",
+  "picture_instruction": "mirá a la cámara y presioná el botón",
 
   "instructions": "usá las flechas en el teclado",
 
@@ -22,6 +22,6 @@
   "email_subject": "Tu retrato codificado",
   "email_hello": "Hola",
   "email_body": "Tu retrato esta adjunto",
-  "email_information": "Si deseás más informacion dirijite a",
+  "email_information": "Si querés más información dirijite a",
   "email_bye": "saludos!"
 }
