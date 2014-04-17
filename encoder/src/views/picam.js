@@ -22,4 +22,4 @@ Shutter.prototype.off = function() {
   this.camera.stop()
 }
 
-module.exports.shutter = Shutter
+module.exports = Shutter

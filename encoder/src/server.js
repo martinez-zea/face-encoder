@@ -3,6 +3,7 @@
 var http = require('http'),
   Router = require('node-simple-router'),
   i18n = require('i18next'),
+  socket = require('socket.io'),
   Template = require('./template'),
   config = require('./config'),
   utils = require('./utils'),
@@ -10,7 +11,8 @@ var http = require('http'),
   views = __dirname + '/views',
   logger = require('./logger'),
   Database = require('./database'),
-  Picam = require('./picam')
+  Picam = require('./picam'),
+  io
 
 // configuration for 18n
 i18n.init({
@@ -45,6 +47,10 @@ Webserver.prototype.run = function() {
   this.server.listen(config.PORT);
 
   logger.log('info', 'web server running at port: ' + config.PORT)
+
+  io = socket.listen(this.Sserver)
+  io.set('log level', 1)
+
 }
 
 Webserver.prototype.index = function() {
