@@ -11,6 +11,20 @@ $(function () {
 
     autoFocus: false,
 
+    onStepChanging: function (event, currentIndex, newIndex){
+      if (currentIndex === 0) {
+        return true
+      } else if (currentIndex === 1){
+        if ($('#username').val()) {
+          return true
+        }
+      } else if (currentIndex === 2){
+        var re = /\S+@\S+\.\S+/
+
+        return re.test($('#email').val())
+      }
+    },
+
     onFinished: function(event, currentIndex){
 
       var user = {
@@ -41,9 +55,9 @@ $(function () {
       if (max <= 0){
         // inform that its time to init camera
         $.getJSON('/picture', function (data){
-          console.log(data);
           if (data.error){
             // reset the step
+            $('.spinner').remove()
             $('#shutter').fadeIn('fast')
             $('#picture_instruction').text('error')
           } else {
