@@ -121,11 +121,14 @@ Webserver.prototype.picture = function() {
     logger.log('info', 'webserver GET /picture')
 
     var uuid = utils.guid()
-    var picam = new Picam(uuid+'.png')
-
-    picam.click()
-
-    res.end('OK')
+    var picam = new Picam(uuid+'.png', function (err, file){
+        if(err){
+          utils.onErr('shutting', err)
+          res.end('Error 500')
+        } else {
+          res.end(file)
+        }
+    })
   })
 }
 
