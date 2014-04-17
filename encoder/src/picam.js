@@ -21,13 +21,13 @@ function Shutter (filename, callback){
 
   var self = this
 
-  this.camera.on('read', function (err, file){
+  this.camera.on('read', function (err){
     if (err) {
       utils.onErr('saving file', err)
-      callback(err, null)
+      callback(err)
     } else{
       logger.log('info', 'saved picture to disc')
-      callback(null, file)
+      callback(null)
       self.camera.stop()
     }
   })

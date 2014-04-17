@@ -42,6 +42,7 @@ $(function () {
         // inform that its time to init camera
         $.get('/picture', function (data){
           console.info('get query done: ', data);
+          $('#picture').html('<img src="/img/'+data+'">')
         })
 
         $(overlay).animate({ backgroundColor: '#fff' }, 'fast');

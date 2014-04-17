@@ -121,13 +121,14 @@ Webserver.prototype.picture = function() {
     logger.log('info', 'webserver GET /picture')
 
     var uuid = utils.guid()
-    var picam = new Picam(uuid+'.png', function (err, file){
+    var filename = uuid+'.png'
+
+    var picam = new Picam(filename, function (err){
         if(err){
           utils.onErr('shutting', err)
           res.end('Error 500')
         } else {
-          conole.log(file)
-          res.end('ok')
+          res.end(filename)
         }
     })
   })
