@@ -41,6 +41,7 @@ $(function () {
       if (max <= 0){
         // inform that its time to init camera
         $.get('/picture', function (data){
+          console.log(data);
           if (data.error){
             console.log(data.error)
           } else {

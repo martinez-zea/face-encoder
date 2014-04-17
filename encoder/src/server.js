@@ -138,7 +138,7 @@ Webserver.prototype.picture = function() {
                 orig: null,
                 face: null
               }
-              res.end(data)
+              res.end(JSON.stringify(data))
             }
 
             data = {
@@ -146,7 +146,7 @@ Webserver.prototype.picture = function() {
                 orig: orig,
                 face: face
               }
-              res.end(data)
+              res.end(JSON.stringify(data))
           })
         }
     })

@@ -26,6 +26,8 @@ var gm = require('gm'),
 // @y: y values of the top corner of face
 // ```
 var produceThumb = function (input, ouput, width, height, x, y, callback){
+  logger.log('running gm')
+  
   //initiate gm
   gm(input)
     // crop the image
@@ -60,6 +62,7 @@ var produceThumb = function (input, ouput, width, height, x, y, callback){
 var findFace = function (input, ouput, callback){
   // plug the image to openCV
   cv.readImage(input, function(err, im){
+    logger.log('info', 'running opencv')
     // run the detector
     im.detectObject(cv.FACE_CASCADE, {min:[40,40]}, function(err, faces){
       // we only need one face
