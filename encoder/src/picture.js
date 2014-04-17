@@ -26,8 +26,8 @@ var gm = require('gm'),
 // @y: y values of the top corner of face
 // ```
 var produceThumb = function (input, ouput, width, height, x, y, callback){
-  logger.log('running gm')
-  
+  logger.log('info','running gm')
+
   //initiate gm
   gm(input)
     // crop the image
@@ -68,11 +68,12 @@ var findFace = function (input, ouput, callback){
       // we only need one face
       if (faces.length > 1){
         callback('more than one face')
-        logger.log('info', 'Found more than ONE face')
+        logger.log('warn', 'Found more than ONE face')
       } else if (faces.length === 0){
         callback('no face')
-        logger.log('ZERO faces found :( ')
+        logger.log('warn', 'ZERO faces found :( ')
       } else if (faces.length === 1){
+        logger.log('info', 'found face')
         // chache the data
         var face = faces[0]
         // call the function to produce the final image

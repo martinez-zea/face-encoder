@@ -133,7 +133,7 @@ Webserver.prototype.picture = function() {
         } else {
           picture.findFace( dir+orig, dir+face, function (err){
             if(err){
-              data = {
+              var data = {
                 error: err,
                 orig: null,
                 face: null
@@ -141,11 +141,11 @@ Webserver.prototype.picture = function() {
               res.end(JSON.stringify(data))
             }
 
-            data = {
-                error: null,
-                orig: orig,
-                face: face
-              }
+            var data = {
+              error: null,
+              orig: orig,
+              face: face
+            }
               res.end(JSON.stringify(data))
           })
         }
