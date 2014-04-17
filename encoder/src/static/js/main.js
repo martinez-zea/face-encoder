@@ -12,9 +12,7 @@ $(function () {
     autoFocus: false,
 
     onStepChanging: function (event, currentIndex, newIndex){
-      if (currentIndex === 0) {
-        return true
-      } else if (currentIndex === 1){
+      if (currentIndex === 1){
         if ($('#username').val()) {
           return true
         }
@@ -22,6 +20,8 @@ $(function () {
         var re = /\S+@\S+\.\S+/
 
         return re.test($('#email').val())
+      } else {
+        return true
       }
     },
 
@@ -34,6 +34,8 @@ $(function () {
 
       $.post('/userDone', user, function(data){
         console.log('data',data)
+
+        window.location = 'http://localhost:3000'
       })
     }
 
