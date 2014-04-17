@@ -126,7 +126,8 @@ Webserver.prototype.picture = function() {
           utils.onErr('shutting', err)
           res.end('Error 500')
         } else {
-          res.end(file)
+          conole.log(file)
+          res.end('ok')
         }
     })
   })

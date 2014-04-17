@@ -22,11 +22,11 @@ $(function () {
         console.log('data',data)
       })
     }
-    
+
   })
 
   $('#shutter').click(function(){
-    $(this).fadeOut()
+    $(this).fadeOut('fast')
     var overlay = $('#overlay')
 
     $(overlay).fadeIn()
@@ -44,7 +44,7 @@ $(function () {
           console.info('get query done: ', data);
         })
 
-        $(overlay).animate({ backgroundColor: "white" }, "fast");
+        $(overlay).animate({ backgroundColor: '#fff' }, 'fast');
         $(overlay).fadeOut()
         timer.stop()
       }
