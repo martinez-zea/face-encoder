@@ -1,6 +1,15 @@
+'use strict';
+
 $(function () {
   $('#wizard').steps({
-    autoFocus: true,
+    labels: {
+      next: window.strings.next,
+      previous: window.strings.previous,
+      loading: window.strings.loading,
+      finifsh: window.strings.finish,
+    },
+
+    autoFocus: false,
 
     // onFinishing: function (event, currentIndex){
     //   console.log("almost done")

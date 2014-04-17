@@ -17,6 +17,15 @@
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="css/main.css">
 
+        <script type="text/javascript">
+          window.strings = {
+            next: '{{next}}',
+            previous: '{{previous}}',
+            loading: '{{loading}}',
+            finifsh: '{{finish}}'
+          }
+        </script>
+
     </head>
     <body>
     <div class="row" id="title">
@@ -30,25 +39,46 @@
 
         <div id="wizard">
           <h1>{{first_step_title}}</h1>
-          <div>{{first_content}}</div>
+          <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-10 instruction">
+                {{first_content}}
+            </div>
+          </div>
 
           <h1>{{second_step_title}}</h1>
-          <div>
-            {{name_instruction}}
-            <input id="username" type="text">
+          <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-10 instruction">
+              {{name_instruction}}
+            </div>
+            <div class="col-md-10 input">
+              <input autofocus id="username" type="text" autocomplete="off" >
+            </div>
           </div>
 
           <h1>{{third_step_title}}</h1>
-          <div>
-            {{email_instruction}}
-            <input id="email" type="text">
+          <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-10 instruction">
+              {{email_instruction}}
+            </div>
+            <div class="col-md-10 input">
+              <input autofocus id="email" type="text" autocomplete="off">
+            </div>
           </div>
 
           <h1>{{four_step_title}}</h1>
-          <div>{{picture_instruction}}</div>
+          <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-10 instruction">
+              {{picture_instruction}}
+            </div>
+          </div>
 
           <h1>{{five_step_title}}</h1>
-          <div>done</div>
+
+          <div class="col-md-9 col-md-offset-1">
+            <div class="col-md-10 instruction">
+              done!
+            </div>
+          </div>
         </div>
       </div>
     </div> <!-- /container -->

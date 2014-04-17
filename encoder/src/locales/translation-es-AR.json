@@ -1,18 +1,23 @@
 {
-  "title" : "decodificador",
+  "title" : "CODIFICADOR",
 
-  "first_step_title": "bienvenido",
+  "first_step_title": "información",
   "second_step_title": "nombre",
   "third_step_title": "correo electrónico",
   "four_step_title": "fotografía",
-  "five_step_title": "listo",
+  "five_step_title": "visualisación",
 
-  "first_content": "este es el decodificador",
-  "name_instruction": "ingresá su nombre",
-  "email_instruction": "ingresá su email",
+  "first_content": "en este modulo podrás generar los archivos necesarios para la producción de tu retrato codificado, para iniciar hacé click en el botón de la parte inferior y seguí las instrucciones",
+  "name_instruction": "ingresá tu nombre",
+  "email_instruction": "ingresá tu e-mail",
   "picture_instruction": "voy a tomar una fotografia ",
 
   "instructions": "usá las flechas en el teclado",
+
+  "next": "siguiente",
+  "previous": "anterior",
+  "loading": "cargando",
+  "finish": "terminar",
 
   "email_subject": "Tu retrato codificado",
   "email_hello": "Hola",

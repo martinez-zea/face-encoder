@@ -3,7 +3,6 @@
 var http = require('http'),
   Router = require('node-simple-router'),
   i18n = require('i18next'),
-  chalk = require('chalk'),
   Template = require('./template'),
   config = require('./config'),
   utils = require('./utils'),
@@ -63,6 +62,13 @@ Webserver.prototype.index = function() {
       name_instruction: i18n.t('name_instruction'),
       email_instruction: i18n.t('email_instruction'),
       picture_instruction: i18n.t('picture_instruction'),
+
+      // navigation
+      next: i18n.t('next'),
+      previous: i18n.t('previous'),
+      loading: i18n.t('loading'),
+      finish: i18n.t('finish'),
+
 
       instructions: i18n.t('instructions')
     }
