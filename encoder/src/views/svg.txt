@@ -1,6 +1,9 @@
 <svg version="1.1"
      baseProfile="full"
-     width="1300" height="30"
+     width="1276" height="36"
      xmlns="http://www.w3.org/2000/svg">
-     <path d="{{ data }}" fill="transparent" stroke="black" />
+
+      <path d="{{data}}"
+        style="stroke: {{stroke}}; fill:{{fill}};"
+        transform="rotate(180) translate(-1276,-36)" />
 </svg>

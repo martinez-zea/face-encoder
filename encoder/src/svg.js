@@ -23,12 +23,11 @@ Svg.prototype.draw = function(callback) {
   var instructions = ''
 
   _.forEach(this.input, function (val){
-      var tmp = utils.map(val, min, max, 5, 25)
-      // TODO: clean the data
-      // mapped.push(Math.ceil(tmp/5.0)*5)
-      mapped.push(Math.ceil(tmp))
+      var tmp = utils.map(val, min, max, 15, 25)
+      // TODO: review map and conversion of scales
+      mapped.push(Math.floor(tmp))
   })
-
+  console.info(mapped);
   var path = new Path()
 
   instructions += path.moveto(0,0).print()
@@ -64,7 +63,9 @@ Svg.prototype.write = function() {
     // extract data
     self.draw(function (svgData){
       var params = {
-        data: svgData
+        data: svgData,
+        stroke: '#000000',
+        fill: '#000000'
       }
       // output to disc
       self.toDisc(__dirname+'/static/svg/test.svg', template(params))
