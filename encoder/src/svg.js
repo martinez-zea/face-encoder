@@ -4,6 +4,7 @@
 // draw a svg from the given array
 var Path = require('paths-js/path'),
   fs = require('fs'),
+  _ = require('lodash'),
   Template = require('./template'),
   utils = require('./utils'),
   logger = require('./logger')
@@ -16,25 +17,30 @@ function Svg (input) {
 
 // build the path
 Svg.prototype.draw = function(callback) {
-  // TODO: extract data from this.input
+  var max = _.max(this.input)
+  var min = _.min(this.input)
+  var mapped = []
+  var instructions = ''
 
-  // path.moveto(0,0).lineto(0,1)
+  _.forEach(this.input, function (val){
+      var tmp = utils.map(val, min, max, 5, 25)
+      // TODO: clean the data
+      // mapped.push(Math.ceil(tmp/5.0)*5)
+      mapped.push(Math.ceil(tmp))
+  })
 
-  // for (var i = 0 ; i >= 255; i++) {
-  // var x = i * 5
-  // var y = randInt(1, 5)
-  // path.lineto(x,y)
-  // };
-  // path.lineto(0,0)
+  var path = new Path()
 
-  this.path = Path()
-    .moveto(10, 20)
-    .lineto(30, 50)
-    .lineto(25, 28)
-    .qcurveto(27, 30, 32, 27)
-    .closepath();
+  instructions += path.moveto(0,0).print()
 
-  callback(this.path.print())
+  _.forEach(mapped, function (val, index){
+    var x = index * 5
+    instructions += path.vlineto(val).hlineto(x).print()
+  })
+
+  instructions += path.vlineto(0).closepath().print()
+
+  callback(instructions)
 }
 
 // Compile the template

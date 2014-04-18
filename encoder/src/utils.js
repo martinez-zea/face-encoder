@@ -22,5 +22,11 @@ var guid = function () {
          s4() + '-' + s4() + s4() + s4();
 }
 
+// # map
+var map = function(value, istart, istop, ostart, ostop) {
+  return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
 module.exports.onErr = onErr
 module.exports.guid = guid
+module.exports.map = map
