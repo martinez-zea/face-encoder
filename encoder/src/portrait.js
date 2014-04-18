@@ -6,7 +6,8 @@
 // pngjs is used to decode and analyze the picture
 var fs = require('fs'),
   PNG = require('pngjs').PNG,
-  chalk = require('chalk')
+  chalk = require('chalk'),
+  logger = require('./logger')
 
 // # Extract
 // Descode the png to get the pixel data of the image
@@ -29,7 +30,7 @@ var extract = function (input, callback) {
                 portrait.push(this.data[idx])
             }
         }
-        console.log( chalk.green('Image color extraction done! ') )
+        logger.log('info', 'Image color extraction done! ')
         // return the data when done
         callback(portrait)
     });

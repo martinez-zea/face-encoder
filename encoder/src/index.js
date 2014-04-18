@@ -4,14 +4,14 @@
 // a svg file ready for production via CNC
 
 // # requirements
-var program = require('commander'),
-  chalk = require('chalk')
+var program = require('commander')
 
 // local modules
 var picture = require('./picture'),
   portrait = require('./portrait'),
   Server = require('./server'),
-  logger = require('./logger')
+  logger = require('./logger'),
+  Svg = require('./svg')
 
 
 // command line options
@@ -20,6 +20,7 @@ program
   .option('-p, --picture', '--picture <input> <output>')
   .option('-r, --portrait', '--portrait <input>')
   .option('-s, --server', 'initiate the server')
+  .option('-d, --draw', 'draw the svg file')
   .parse(process.argv);
 
 // # Picture
@@ -57,14 +58,28 @@ if (program.portrait) {
   var input_file = program.args[0]
   //run the image processing
   portrait.extract(input_file, function (data) {
-    logger.log('portrait data: ' + data)
+    logger.log('info', 'portrait data: ' + data)
   })
 }
 
-// #server
+// # server
 // main mode oh operation, executes a webserver to interact with the visitors
 if (program.server){
   // instantiate and run the server
   var server = new Server()
   server.run()
 }
+
+// # svg
+if (program.draw) {
+
+  // call the extract method
+  portrait.extract('static/img/test.png', function (data) {
+    logger.log('info', 'portrait data: ' + data)
+
+    var svg = new Svg(data)
+
+    svg.write()
+  })
+}
+
