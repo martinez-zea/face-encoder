@@ -1,9 +1,13 @@
 'use strict';
 
+// # Database
+// interact with nedb to store the data from users
+
 var Datastore = require('nedb'),
   utils = require('./utils'),
   logger = require('./logger')
 
+// Create a new database to interact with
 function Database (path) {
   this.db = new Datastore({
     filename: path,
@@ -11,6 +15,7 @@ function Database (path) {
   })
 }
 
+// wrapper of nedb's insert methd
 Database.prototype.insert = function(doc, callback) {
   this.db.insert(doc, function (err, newDoc) {
     if (err) {
@@ -22,6 +27,5 @@ Database.prototype.insert = function(doc, callback) {
     }
   })
 }
-
 
 module.exports = Database

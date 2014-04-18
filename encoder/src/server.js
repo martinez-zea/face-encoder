@@ -1,10 +1,15 @@
 'use strict';
+// # Server
+// Principal module of encoder. This module glues together the modules and the
+// interaction with the public
 
+// requirements
 var http = require('http'),
   Router = require('node-simple-router'),
-  i18n = require('i18next'),
-  socket = require('socket.io'),
-  Template = require('./template'),
+  i18n = require('i18next')
+
+// local modules
+var Template = require('./template'),
   config = require('./config'),
   utils = require('./utils'),
   local_config = require('./local_config'),
@@ -12,8 +17,7 @@ var http = require('http'),
   logger = require('./logger'),
   Database = require('./database'),
   Picam = require('./picam'),
-  picture = require('./picture'),
-  io
+  picture = require('./picture')
 
 // configuration for 18n
 i18n.init({
@@ -23,8 +27,10 @@ i18n.init({
   resGetPath: __dirname + '/locales/__ns__-__lng__.json'
 })
 
+// Costructor
 function Webserver () {
-   this.static_files = __dirname + '/static'
+  // define the path for serve static files
+  this.static_files = __dirname + '/static'
 
   // instantiate the router
   this.router = new Router({
@@ -34,9 +40,11 @@ function Webserver () {
     serve_static: true
   })
 
+  // database for store offline the email queue
   this.database = new Database(__dirname + '/static/users.db')
 }
 
+// Initialize the server with its routes
 Webserver.prototype.run = function() {
   // setup routes
   this.index()
@@ -48,16 +56,15 @@ Webserver.prototype.run = function() {
   this.server.listen(config.PORT);
 
   logger.log('info', 'web server running at port: ' + config.PORT)
-
-  io = socket.listen(this.server)
-  io.set('log level', 1)
-
 }
 
+
+// Index view
 Webserver.prototype.index = function() {
   this.router.get('/', function (req, res) {
     logger.log('info', 'webserver GET /')
 
+    // strings for inject into the HTML document
     var params = {
       title: i18n.t('title'),
       // titles
@@ -91,6 +98,7 @@ Webserver.prototype.index = function() {
       instructions: i18n.t('instructions')
     }
 
+    // load and compile the email template
     var template = new Template(views+'/base.html')
     template.compile(function (err, data){
         if(err){
@@ -102,13 +110,15 @@ Webserver.prototype.index = function() {
   })
 };
 
+
+// This function setup the view to collect the final data from the user
 Webserver.prototype.receive = function() {
   var self = this
 
   this.router.post('/userDone', function (req, res){
     logger.log('info', 'webserver POST /userDone')
 
-    // TODO: attach image and svg
+    // serialize the received data
     var doc = {
       username: req.post.username,
       email: req.post.email,
@@ -117,6 +127,7 @@ Webserver.prototype.receive = function() {
       status: 'wating'
     }
 
+    //insert into db
     self.database.insert(doc, function (err, newDoc){
       if (err) {
         res.end('ERROR 500 : ' + err )
@@ -127,21 +138,25 @@ Webserver.prototype.receive = function() {
   })
 }
 
+// route for take and process the user image
 Webserver.prototype.picture = function() {
   this.router.get('/picture', function (req, res){
     logger.log('info', 'webserver GET /picture')
 
+    // file names and path
     var dir = __dirname+'/static/img/'
     var uuid = utils.guid()
     var orig = uuid+'.png'
     var face = uuid+'_face.png'
 
+    // instance of Picam for interact with the rpi camera
     var picam = new Picam(orig, function (err){
         if(err){
           utils.onErr('shutting', err)
           res.end('Error 500')
         } else {
           var data ={}
+          // call the method for face recognition and image manipulation
           picture.findFace( dir+orig, dir+face, function (err){
             if(err){
               data = {
@@ -149,6 +164,7 @@ Webserver.prototype.picture = function() {
                 orig: null,
                 face: null
               }
+              // return error
               res.end(JSON.stringify(data))
             }
 
@@ -157,6 +173,7 @@ Webserver.prototype.picture = function() {
               orig: orig,
               face: face
             }
+              // return success
               res.end(JSON.stringify(data))
           })
         }

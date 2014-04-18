@@ -1,5 +1,6 @@
 'use strict';
-
+// # Mailer
+// send emails with information and svg to the interactors
 var nodemailer = require('nodemailer'),
   local_config = require('./local_config'),
   chalk = require('chalk'),
