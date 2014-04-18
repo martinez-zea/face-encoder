@@ -67,11 +67,13 @@ Webserver.prototype.index = function() {
       four_step_title: i18n.t('four_step_title'),
       five_step_title: i18n.t('five_step_title'),
 
+
       // content
       first_content: i18n.t('first_content'),
       name_instruction: i18n.t('name_instruction'),
       email_instruction: i18n.t('email_instruction'),
       picture_instruction: i18n.t('picture_instruction'),
+      the_end: i18n.t('the_end'),
 
       // navigation
       next: i18n.t('next'),
@@ -83,6 +85,7 @@ Webserver.prototype.index = function() {
       error_picture: i18n.t('error_picture'),
       processing: i18n.t('processing'),
       result: i18n.t('result'),
+      picture_again: i18n.t('picture_again'),
 
 
       instructions: i18n.t('instructions')
@@ -109,6 +112,8 @@ Webserver.prototype.receive = function() {
     var doc = {
       username: req.post.username,
       email: req.post.email,
+      face: req.post.face,
+      svg: req.post.svg,
       status: 'wating'
     }
 

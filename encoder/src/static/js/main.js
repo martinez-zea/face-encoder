@@ -20,6 +20,8 @@ $(function () {
         var re = /\S+@\S+\.\S+/
 
         return re.test($('#email').val())
+      } else if (currentIndex === 3){
+        return window.picture
       } else {
         return true
       }
@@ -29,7 +31,8 @@ $(function () {
 
       var user = {
         username : $('#username').val(),
-        email : $('#email').val()
+        email : $('#email').val(),
+        face: window.face
       }
 
       $.post('/userDone', user, function(data){
@@ -61,10 +64,13 @@ $(function () {
             // reset the step
             $('.spinner').remove()
             $('#shutter').fadeIn('fast')
-            $('#picture_instruction').text(window.strings.error_picture+data.error)
+            $('#picture_instruction').text(window.strings.error_picture+data.error+window.strings.picture_again)
+            window.picture = false
           } else {
             $('#picture_instruction').text(window.strings.result)
             $('#picture').html('<img src="/img/'+data.face+'">')
+            window.picture = true
+            window.face = data.face
           }
         })
 

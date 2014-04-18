@@ -22,11 +22,16 @@
             next: '{{next}}',
             previous: '{{previous}}',
             loading: '{{loading}}',
-            finifsh: '{{finish}}',
+            finish: '{{finish}}',
             error_picture: '{{error_picture}}',
             processing: '{{processing}}',
-            result: '{{result}}'
+            result: '{{result}}',
+            picture_again: '{{picture_again}}'
           }
+
+          window.picture = false
+          window.face = null
+          window.svg = null
         </script>
 
     </head>
@@ -84,8 +89,8 @@
           <h1>{{five_step_title}}</h1>
 
           <div class="col-md-9 col-md-offset-1">
-            <div class="col-md-10 instruction">
-              done!
+            <div id="last" class="col-md-10 instruction">
+              {{the_end}}
             </div>
           </div>
         </div>
@@ -94,7 +99,7 @@
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <footer>
-          <p>{{instructions}}</p>
+          <p></p>
         </footer>
       </div>
     </div>
