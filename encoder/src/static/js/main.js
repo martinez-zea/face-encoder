@@ -11,28 +11,77 @@ $(function () {
 
     autoFocus: false,
 
+    onStepChanging: function (event, currentIndex, newIndex){
+      if (currentIndex === 1){
+        if ($('#username').val()) {
+          return true
+        }
+      } else if (currentIndex === 2){
+        var re = /\S+@\S+\.\S+/
+
+        return re.test($('#email').val())
+      } else if (currentIndex === 3){
+        return window.picture
+      } else {
+        return true
+      }
+    },
+
     onFinished: function(event, currentIndex){
 
       var user = {
         username : $('#username').val(),
-        email : $('#email').val()
+        email : $('#email').val(),
+        face: window.face
       }
 
       $.post('/userDone', user, function(data){
-        console.log("data",data)
+        console.log('data',data)
+
+        window.location = 'http://localhost:3000'
       })
-    },
-
-    onStepChanged: function(event, currentIndex ){
-      if (currentIndex === 3) {
-        console.info('step 3 : picture')
-
-        // inform that its time to init camera
-        $.get('/picture', function (data){
-          console.info('get query done: ', data);
-        })
-      }
     }
 
+  })
+
+  $('#shutter').click(function(){
+    $(this).fadeOut('fast')
+
+    var overlay = $('#overlay')
+    $(overlay).fadeIn('fast')
+
+    var max = 3
+    var timer = $.timer(function(){
+      $(overlay).html('<span>'+max+'</span>')
+
+      if (max >= 0 ) {
+        max--
+      }
+      if (max <= 0){
+        // inform that its time to init camera
+        $.getJSON('/picture', function (data){
+          if (data.error){
+            // reset the step
+            $('.spinner').remove()
+            $('#shutter').fadeIn('fast')
+            $('#picture_instruction').text(window.strings.error_picture+data.error+window.strings.picture_again)
+            window.picture = false
+          } else {
+            $('#picture_instruction').text(window.strings.result)
+            $('#picture').html('<img src="/img/'+data.face+'">')
+            window.picture = true
+            window.face = data.face
+          }
+        })
+
+        $(overlay).animate({ backgroundColor: '#fff' }, 'fast');
+        $(overlay).fadeOut()
+
+        $('#picture_instruction').text(window.strings.processing)
+        $('#picture').spin('large', '#000000')
+
+        timer.stop()
+      }
+    }, 1000, true)
   })
 })

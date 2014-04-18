@@ -22,12 +22,21 @@
             next: '{{next}}',
             previous: '{{previous}}',
             loading: '{{loading}}',
-            finifsh: '{{finish}}'
+            finish: '{{finish}}',
+            error_picture: '{{error_picture}}',
+            processing: '{{processing}}',
+            result: '{{result}}',
+            picture_again: '{{picture_again}}'
           }
+
+          window.picture = false
+          window.face = null
+          window.svg = null
         </script>
 
     </head>
     <body>
+    <div id="overlay"></div>
     <div class="row" id="title">
       <div class="col-md-12">
         <h1>{{title}}</h1>
@@ -51,7 +60,7 @@
               {{name_instruction}}
             </div>
             <div class="col-md-10 input">
-              <input autofocus id="username" type="text" autocomplete="off" >
+              <input autofocus id="username" type="text" autocomplete="off" class="required">
             </div>
           </div>
 
@@ -61,22 +70,27 @@
               {{email_instruction}}
             </div>
             <div class="col-md-10 input">
-              <input autofocus id="email" type="text" autocomplete="off">
+              <input autofocus id="email" type="text" autocomplete="off" class="required">
             </div>
           </div>
 
           <h1>{{four_step_title}}</h1>
           <div class="col-md-10 col-md-offset-1">
-            <div class="col-md-10 instruction">
+            <div id="picture_instruction" class="col-md-10 instruction">
               {{picture_instruction}}
+            </div>
+            <div id="picture" class="col-md-10">
+              <button id="shutter" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-camera"></span>
+              </button>
             </div>
           </div>
 
           <h1>{{five_step_title}}</h1>
 
           <div class="col-md-9 col-md-offset-1">
-            <div class="col-md-10 instruction">
-              done!
+            <div id="last" class="col-md-10 instruction">
+              {{the_end}}
             </div>
           </div>
         </div>
@@ -85,7 +99,7 @@
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <footer>
-          <p>{{instructions}}</p>
+          <p></p>
         </footer>
       </div>
     </div>
@@ -93,6 +107,10 @@
       <script src="js/vendor/jquery/dist/jquery.js"></script>
       <script src="js/vendor/bootstrap/dist/js/bootstrap.js"></script>
       <script src="js/vendor/jquery-steps/build/jquery.steps.min.js"></script>
+      <script src="js/vendor/jquery-timer/jquery.timer.js"></script>
+      <script src="js/vendor/jquery-color/jquery.color.js"></script>
+      <script src="js/vendor/spin.js/spin.js"></script>
+      <script src="js/vendor/spin.js/jquery.spin.js"></script>
 
       <script src="js/main.js"></script>
     </body>

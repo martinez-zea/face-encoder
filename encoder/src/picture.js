@@ -7,10 +7,19 @@
 // graphicsmagick
 var gm = require('gm'),
   cv = require('opencv'),
-  fs = require('fs'),
-  chalk = require('chalk'),
+  i18n = require('i18next'),
   config = require('./config'),
-  utils = require('./utils')
+  utils = require('./utils'),
+  logger = require('./logger'),
+  local_config = require('./local_config')
+
+// configuration for 18n
+i18n.init({
+  //default language from config
+  lng: local_config.LANGUAGE,
+  ns: 'translation',
+  resGetPath: __dirname + '/locales/__ns__-__lng__.json'
+})
 
 // #ProduceThumb
 // reduce and crop the given image
@@ -24,7 +33,9 @@ var gm = require('gm'),
 // @x: x values of the top corner of face
 // @y: y values of the top corner of face
 // ```
-var produceThumb = function (input, ouput, width, height, x, y){
+var produceThumb = function (input, ouput, width, height, x, y, callback){
+  logger.log('info','running gm')
+
   //initiate gm
   gm(input)
     // crop the image
@@ -40,8 +51,10 @@ var produceThumb = function (input, ouput, width, height, x, y){
     .write(ouput, function (err) {
       if (err){
         utils.onErr('saving file ', err)
+        callback(i18n.t('other_error'))
       }
-      console.log( chalk.green('Image ' + input + ' sucessfully cropped') )
+      logger.log('info', 'Image ' + input + ' sucessfully cropped')
+      callback(null)
   });
 
 }
@@ -54,21 +67,25 @@ var produceThumb = function (input, ouput, width, height, x, y){
 // @input: input file
 // @output: output file
 // ```
-var findFace = function (input, ouput){
+var findFace = function (input, ouput, callback){
   // plug the image to openCV
   cv.readImage(input, function(err, im){
+    logger.log('info', 'running opencv')
     // run the detector
-    im.detectObject(cv.FACE_CASCADE, {min:[100,100]}, function(err, faces){
+    im.detectObject(cv.FACE_CASCADE, {min:[40,40]}, function(err, faces){
       // we only need one face
       if (faces.length > 1){
-        console.log( chalk.red.bold('Found more than ONE face') )
+        callback(i18n.t('many_faces'))
+        logger.log('warn', 'Found more than ONE face')
       } else if (faces.length === 0){
-        console.log( chalk.red.bold('ZERO faces found :( ') )
+        callback(i18n.t('no_face'))
+        logger.log('warn', 'ZERO faces found :( ')
       } else if (faces.length === 1){
+        logger.log('info', 'found face')
         // chache the data
         var face = faces[0]
         // call the function to produce the final image
-        produceThumb(input, ouput, face.height, face.height, face.x, face.y)
+        produceThumb(input, ouput, face.height, face.height, face.x, face.y, callback)
       }
     });
   })

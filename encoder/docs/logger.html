@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>logger.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="config.html">
+                config.js
+              </a>
+            
+              
+              <a class="source" href="database.html">
+                database.js
+              </a>
+            
+              
+              <a class="source" href="email.html">
+                email.js
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.js
+              </a>
+            
+              
+              <a class="source" href="local_config.html">
+                local_config.js
+              </a>
+            
+              
+              <a class="source" href="logger.html">
+                logger.js
+              </a>
+            
+              
+              <a class="source" href="picam.html">
+                picam.js
+              </a>
+            
+              
+              <a class="source" href="picture.html">
+                picture.js
+              </a>
+            
+              
+              <a class="source" href="portrait.html">
+                portrait.js
+              </a>
+            
+              
+              <a class="source" href="server.html">
+                server.js
+              </a>
+            
+              
+              <a class="source" href="template.html">
+                template.js
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>logger.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-pi">'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h1 id="logger">Logger</h1>
+<p>basic logger based on:
+<a href="http://docs.nodejitsu.com/articles/intermediate/how-to-log">http://docs.nodejitsu.com/articles/intermediate/how-to-log</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> logger = exports,
+  chalk = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chalk'</span>),
+  moment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'moment'</span>)
+
+logger.debugLevel = <span class="hljs-string">'info'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>case replacement.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>logger.cases = {
+  info: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span>{</span>
+    <span class="hljs-keyword">return</span> console.log( chalk.gray(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] +<span class="hljs-string">': '</span>+ <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]) )
+  },
+  warn: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span>{</span>
+    <span class="hljs-keyword">return</span> console.log( chalk.yellow(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] +<span class="hljs-string">': '</span>+ <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]) )
+  },
+  err: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span>{</span>
+    <span class="hljs-keyword">return</span> console.log( chalk.red(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] +<span class="hljs-string">': '</span>+ <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]) )
+  },
+  _default: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span>{</span>
+    <span class="hljs-keyword">return</span> console.log( chalk.gray(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] +<span class="hljs-string">': '</span>+ <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]) )
+  }
+}
+
+logger.delegator = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span>{</span>
+  <span class="hljs-keyword">var</span> args, key, delegate;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Transform arguments list into an array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  args = [].slice.call( <span class="hljs-built_in">arguments</span> );</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>shift the case key from the arguments</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  key = args.shift();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Assign the default case handler</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  delegate = logger.cases._default;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Derive the method to delegate operation to</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> ( logger.cases.hasOwnProperty( key ) ) {
+    delegate = logger.cases[ key ];
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>The scope arg could be set to something specific,
+in this case, |null| will suffice</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">return</span> delegate.apply( <span class="hljs-literal">null</span>, args );
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>get the input and call the delegator to select the appropiate output</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>logger.log = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(level, message)</span> {</span>
+  <span class="hljs-keyword">var</span> when = moment().format(<span class="hljs-string">'dddd, MMMM Do YYYY, h:mm:ss a'</span>)
+  logger.delegator(level, when, message)
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

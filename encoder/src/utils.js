@@ -10,6 +10,8 @@ var onErr = function (where, err) {
   return 1;
 }
 
+// # Guid
+// generate a unique identifier for each image
 var guid = function () {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)

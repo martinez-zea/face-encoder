@@ -1,6 +1,7 @@
 'use strict';
 
 // # Logger
+// basic logger based on:
 // http://docs.nodejitsu.com/articles/intermediate/how-to-log
 var logger = exports,
   chalk = require('chalk'),
@@ -8,6 +9,7 @@ var logger = exports,
 
 logger.debugLevel = 'info'
 
+// case replacement.
 logger.cases = {
   info: function (){
     return console.log( chalk.gray(arguments[0] +': '+ arguments[1]) )
@@ -45,7 +47,7 @@ logger.delegator = function (){
   return delegate.apply( null, args );
 }
 
-
+// get the input and call the delegator to select the appropiate output
 logger.log = function (level, message) {
   var when = moment().format('dddd, MMMM Do YYYY, h:mm:ss a')
   logger.delegator(level, when, message)

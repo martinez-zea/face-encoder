@@ -5,12 +5,12 @@
   "second_step_title": "nombre",
   "third_step_title": "correo electrónico",
   "four_step_title": "fotografía",
-  "five_step_title": "visualisación",
+  "five_step_title": "visualización",
 
   "first_content": "en este modulo podrás generar los archivos necesarios para la producción de tu retrato codificado, para iniciar hacé click en el botón de la parte inferior y seguí las instrucciones",
-  "name_instruction": "ingresá tu nombre",
-  "email_instruction": "ingresá tu e-mail",
-  "picture_instruction": "voy a tomar una fotografia ",
+  "name_instruction": "escribí tu nombre",
+  "email_instruction": "escribí tu e-mail",
+  "picture_instruction": "mirá a la cámara y presioná el botón",
 
   "instructions": "usá las flechas en el teclado",
 
@@ -19,9 +19,18 @@
   "loading": "cargando",
   "finish": "terminar",
 
+  "error_picture": "upps!, ",
+  "picture_again": "Inténtalo de nuevo",
+  "no_face": "no encontré un rostro.",
+  "many_faces": "encontré más de un rostro.",
+  "other_error": "error desconocido",
+  "processing":"procesando",
+  "result": "tu imagen procesada",
+  "the_end": "tu retrato ha sido codificado, pronto lo recibirás en tu correo",
+
   "email_subject": "Tu retrato codificado",
   "email_hello": "Hola",
   "email_body": "Tu retrato esta adjunto",
-  "email_information": "Si deseás más informacion dirijite a",
+  "email_information": "Si querés más información dirijite a",
   "email_bye": "saludos!"
 }

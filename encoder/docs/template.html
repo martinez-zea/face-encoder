@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>template.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="config.html">
+                config.js
+              </a>
+            
+              
+              <a class="source" href="database.html">
+                database.js
+              </a>
+            
+              
+              <a class="source" href="email.html">
+                email.js
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.js
+              </a>
+            
+              
+              <a class="source" href="local_config.html">
+                local_config.js
+              </a>
+            
+              
+              <a class="source" href="logger.html">
+                logger.js
+              </a>
+            
+              
+              <a class="source" href="picam.html">
+                picam.js
+              </a>
+            
+              
+              <a class="source" href="picture.html">
+                picture.js
+              </a>
+            
+              
+              <a class="source" href="portrait.html">
+                portrait.js
+              </a>
+            
+              
+              <a class="source" href="server.html">
+                server.js
+              </a>
+            
+              
+              <a class="source" href="template.html">
+                template.js
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>template.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-pi">'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h1 id="template">Template</h1>
+<p>load and compile handlebars templates</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>requirements</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>),
+  hbs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'handlebars'</span>),
+  utils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./utils'</span>),
+  logger = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./logger'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Constructor</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Template</span> <span class="hljs-params">(filename)</span> {</span>
+  <span class="hljs-keyword">this</span>.filename = filename
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>load the template from the filesystem</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Template.prototype.load = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(callback)</span> {</span>
+  fs.readFile(<span class="hljs-keyword">this</span>.filename, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, data)</span> {</span>
+      <span class="hljs-keyword">if</span> (err) {
+        utils.onErr(<span class="hljs-string">'Ups! error opening file: '</span> + <span class="hljs-keyword">this</span>.filename + <span class="hljs-string">' : '</span> + err)
+        callback(err, <span class="hljs-literal">null</span>)
+      }
+      logger.log(<span class="hljs-string">'info'</span>, <span class="hljs-string">'template loaded'</span>)
+      callback(<span class="hljs-literal">null</span>, data)
+    })
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>compile and return a template</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Template.prototype.compile = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(callback)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>load the file</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">this</span>.load(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, data)</span>{</span>
+    <span class="hljs-keyword">if</span>(err){
+      callback(err, <span class="hljs-literal">null</span>)
+    }
+    logger.log(<span class="hljs-string">'info'</span>, <span class="hljs-string">'template compiled'</span>)
+    callback(<span class="hljs-literal">null</span>, hbs.compile(data))
+  })
+}
+
+module.exports = Template</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
