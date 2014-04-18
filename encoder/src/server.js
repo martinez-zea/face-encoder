@@ -79,6 +79,11 @@ Webserver.prototype.index = function() {
       loading: i18n.t('loading'),
       finish: i18n.t('finish'),
 
+      //msgs
+      error_picture: i18n.t('error_picture'),
+      processing: i18n.t('processing'),
+      result: i18n.t('result'),
+
 
       instructions: i18n.t('instructions')
     }
@@ -131,9 +136,10 @@ Webserver.prototype.picture = function() {
           utils.onErr('shutting', err)
           res.end('Error 500')
         } else {
+          var data ={}
           picture.findFace( dir+orig, dir+face, function (err){
             if(err){
-              var data = {
+              data = {
                 error: err,
                 orig: null,
                 face: null
@@ -141,7 +147,7 @@ Webserver.prototype.picture = function() {
               res.end(JSON.stringify(data))
             }
 
-            var data = {
+            data = {
               error: null,
               orig: orig,
               face: face

@@ -50,7 +50,7 @@ $(function () {
     var max = 3
     var timer = $.timer(function(){
       $(overlay).html('<span>'+max+'</span>')
-      
+
       if (max >= 0 ) {
         max--
       }
@@ -61,9 +61,9 @@ $(function () {
             // reset the step
             $('.spinner').remove()
             $('#shutter').fadeIn('fast')
-            $('#picture_instruction').text('error')
+            $('#picture_instruction').text(window.strings.error_picture+data.error)
           } else {
-            $('#picture_instruction').text('resultado')
+            $('#picture_instruction').text(window.strings.result)
             $('#picture').html('<img src="/img/'+data.face+'">')
           }
         })
@@ -71,7 +71,7 @@ $(function () {
         $(overlay).animate({ backgroundColor: '#fff' }, 'fast');
         $(overlay).fadeOut()
 
-        $('#picture_instruction').text('procesando')
+        $('#picture_instruction').text(window.strings.processing)
         $('#picture').spin('large', '#000000')
 
         timer.stop()

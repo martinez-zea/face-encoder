@@ -7,11 +7,19 @@
 // graphicsmagick
 var gm = require('gm'),
   cv = require('opencv'),
-  fs = require('fs'),
-  chalk = require('chalk'),
+  i18n = require('i18next'),
   config = require('./config'),
   utils = require('./utils'),
-  logger = require('./logger')
+  logger = require('./logger'),
+  local_config = require('./local_config')
+
+// configuration for 18n
+i18n.init({
+  //default language from config
+  lng: local_config.LANGUAGE,
+  ns: 'translation',
+  resGetPath: __dirname + '/locales/__ns__-__lng__.json'
+})
 
 // #ProduceThumb
 // reduce and crop the given image
@@ -43,7 +51,7 @@ var produceThumb = function (input, ouput, width, height, x, y, callback){
     .write(ouput, function (err) {
       if (err){
         utils.onErr('saving file ', err)
-        callback(err)
+        callback(i18n.t('other_error'))
       }
       logger.log('info', 'Image ' + input + ' sucessfully cropped')
       callback(null)
@@ -67,10 +75,10 @@ var findFace = function (input, ouput, callback){
     im.detectObject(cv.FACE_CASCADE, {min:[40,40]}, function(err, faces){
       // we only need one face
       if (faces.length > 1){
-        callback('more than one face')
+        callback(i18n.t('many_faces'))
         logger.log('warn', 'Found more than ONE face')
       } else if (faces.length === 0){
-        callback('no face')
+        callback(i18n.t('no_face'))
         logger.log('warn', 'ZERO faces found :( ')
       } else if (faces.length === 1){
         logger.log('info', 'found face')

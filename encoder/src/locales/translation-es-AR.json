@@ -19,6 +19,13 @@
   "loading": "cargando",
   "finish": "terminar",
 
+  "error_picture": "upps!, ",
+  "no_face": "no encontré un rostro",
+  "many_faces": "encontré más de un rostro",
+  "other_error": "error desconocido",
+  "processing":"procesando",
+  "result": "tu imagen procesada",
+
   "email_subject": "Tu retrato codificado",
   "email_hello": "Hola",
   "email_body": "Tu retrato esta adjunto",
