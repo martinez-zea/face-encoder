@@ -165,30 +165,30 @@ Webserver.prototype.picture = function() {
               data = {
                 error: err,
                 orig: null,
-                face: null
+                face: null,
+                svg: null
               }
               // return error
               res.end(JSON.stringify(data))
-            }
-
-            // SVG
-            portrait.extract(dir+face, function (data){
-              var tmp = new Svg(data)
-              tmp.write(svg, function (err){
-                if (err) {
-                  utils.onErr('wiriting svg on view', err)
-                } else{
-                  data = {
-                    error: null,
-                    orig: orig,
-                    face: face
+            } else {
+              // SVG
+              portrait.extract(dir+face, function (data){
+                var tmp = new Svg(data)
+                tmp.write(svg, function (err){
+                  if (err) {
+                    utils.onErr('wiriting svg on view', err)
+                  } else{
+                    data = {
+                      error: null,
+                      orig: orig,
+                      face: face
+                    }
+                    // return success
+                    res.end(JSON.stringify(data))
                   }
-                  // return success
-                  res.end(JSON.stringify(data))
-                }
+                })
               })
-            })
-
+            }
 
           })
         }
