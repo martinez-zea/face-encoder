@@ -36,6 +36,7 @@ function Server () {
 Server.prototype.initiate = function (){
   // routes
   this.index(this.router)
+  this.scanning(this.router)
 
   // start the web server
   console.log( chalk.magenta('web serer running at port: ' + config.SERVER_PORT ) )
@@ -95,5 +96,37 @@ Server.prototype.index = function (router){
   })
 }
 
+Server.prototype.scanning = function (router){
+
+  router.get('/scanning', function (req, res) {
+    console.log( chalk.gray('get /scannig') )
+
+    var params = {
+      title: i18n.t('title'),
+      // titles
+      first_step_title: i18n.t('first_step_title'),
+      second_step_title: i18n.t('second_step_title'),
+      third_step_title: i18n.t('third_step_title'),
+      four_step_title: i18n.t('four_step_title'),
+      five_step_title: i18n.t('five_step_title'),
+
+      // content
+      first_content: i18n.t('first_content'),
+      name_instruction: i18n.t('name_instruction'),
+      email_instruction: i18n.t('email_instruction'),
+      picture_instruction: i18n.t('picture_instruction'),
+
+      instructions: i18n.t('instructions')
+    }
+
+    Server.loadAndCompile(views+'/scanning.html', function(data, err){
+      if (err) {
+        utils.onErr('compiling scannig', err)
+      } else{
+        Server.sendResponse(res, data, params)
+      }
+    })
+  })
+}
 
 module.exports = Server

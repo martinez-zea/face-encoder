@@ -20,3 +20,10 @@ socket.on('measure', function (data) {
     $('#'+key).css('background-color', item.color)
   })
 });
+
+
+$(function () {
+  $(document).ready(function(){
+    $('.loading').spin('large', '#000000')
+  })
+})
