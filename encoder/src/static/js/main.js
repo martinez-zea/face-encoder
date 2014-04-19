@@ -73,6 +73,7 @@ $(function () {
           } else {
             $('#picture_instruction').text(window.strings.result)
             $('#picture').html('<img src="/img/'+data.face+'">')
+            $('#svg').html('<img src="/svg/'+data.svg+'">')
             window.picture = true
             window.face = data.face
             window.svg = data.svg
