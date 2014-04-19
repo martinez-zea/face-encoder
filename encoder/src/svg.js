@@ -23,11 +23,11 @@ Svg.prototype.draw = function(callback) {
   var instructions = ''
 
   _.forEach(this.input, function (val){
-      var tmp = utils.map(val, min, max, 15, 25)
+      var tmp = utils.map(val, min, max, 5, 25)
       // TODO: review map and conversion of scales
-      mapped.push(Math.floor(tmp))
+      mapped.push(Math.ceil(tmp))
   })
-  console.info(mapped);
+  console.info(mapped.toString());
   var path = new Path()
 
   instructions += path.moveto(0,0).print()
@@ -56,7 +56,7 @@ Svg.prototype.tpl = function(input, callback) {
 }
 
 // main fuction
-Svg.prototype.write = function() {
+Svg.prototype.write = function(path, callback) {
   var self = this
   // compile template
   this.tpl(__dirname+'/views/svg.txt', function (template){
@@ -68,18 +68,20 @@ Svg.prototype.write = function() {
         fill: '#000000'
       }
       // output to disc
-      self.toDisc(__dirname+'/static/svg/test.svg', template(params))
+      self.toDisc(path, template(params), callback)
     })
   })
 }
 
 // write file to disc
-Svg.prototype.toDisc = function(output, data) {
+Svg.prototype.toDisc = function(output, data, callback) {
   fs.writeFile(output, data, function(err) {
       if(err) {
         utils.onErr('writing svg to disk', err)
+        callback(err)
       } else {
-        logger.log('info', 'file saved')
+        logger.log('info', 'svg file saved')
+        callback(null)
       }
   })
 }

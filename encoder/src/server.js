@@ -17,7 +17,9 @@ var Template = require('./template'),
   logger = require('./logger'),
   Database = require('./database'),
   Picam = require('./picam'),
-  picture = require('./picture')
+  picture = require('./picture'),
+  Svg = require('./svg'),
+  portrait = require('./portrait')
 
 // configuration for 18n
 i18n.init({
@@ -148,6 +150,7 @@ Webserver.prototype.picture = function() {
     var uuid = utils.guid()
     var orig = uuid+'.png'
     var face = uuid+'_face.png'
+    var svg = __dirname+uuid+'.svg'
 
     // instance of Picam for interact with the rpi camera
     var picam = new Picam(orig, function (err){
@@ -168,13 +171,25 @@ Webserver.prototype.picture = function() {
               res.end(JSON.stringify(data))
             }
 
-            data = {
-              error: null,
-              orig: orig,
-              face: face
-            }
-              // return success
-              res.end(JSON.stringify(data))
+            // SVG
+            portrait.extract(dir+face, function (data){
+              var tmp = new Svg(data)
+              tmp.write(svg, function (err){
+                if (err) {
+                  utils.onErr('wiriting svg on view', err)
+                } else{
+                  data = {
+                    error: null,
+                    orig: orig,
+                    face: face
+                  }
+                  // return success
+                  res.end(JSON.stringify(data))
+                }
+              })
+            })
+
+
           })
         }
     })
