@@ -12,22 +12,19 @@ $(function () {
     autoFocus: false,
 
     onStepChanging: function (event, currentIndex, newIndex){
-      // if (currentIndex === 1){
-      //   if ($('#username').val()) {
-      //     return true
-      //   }
-      // } else if (currentIndex === 2){
-      //   var re = /\S+@\S+\.\S+/
+      if (currentIndex === 1){
+        if ($('#username').val()) {
+          return true
+        }
+      } else if (currentIndex === 2){
+        var re = /\S+@\S+\.\S+/
 
-      //   return re.test($('#email').val())
-      // } else {
-      // // } else if (currentIndex === 3){
-      // //   return window.picture
-      // // } else {
-      //   return true
-      // }
-
-      return true
+        return re.test($('#email').val())
+      } else if (currentIndex === 3){
+        return window.picture
+      } else {
+        return true
+      }
     },
 
     onFinished: function(event, currentIndex){
