@@ -181,7 +181,8 @@ Webserver.prototype.picture = function() {
                     data = {
                       error: null,
                       orig: orig,
-                      face: face
+                      face: face,
+                      svg: svg
                     }
                     // return success
                     res.end(JSON.stringify(data))

@@ -27,7 +27,7 @@ Svg.prototype.draw = function(callback) {
       // TODO: review map and conversion of scales
       mapped.push(Math.ceil(tmp))
   })
-  console.info(mapped.toString());
+  //console.info(mapped.toString());
   var path = new Path()
 
   instructions += path.moveto(0,0).print()
