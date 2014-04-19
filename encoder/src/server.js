@@ -150,7 +150,7 @@ Webserver.prototype.picture = function() {
     var uuid = utils.guid()
     var orig = uuid+'.png'
     var face = uuid+'_face.png'
-    var svg = __dirname+uuid+'.svg'
+    var svg =  uuid+'.svg'
 
     // instance of Picam for interact with the rpi camera
     var picam = new Picam(orig, function (err){
@@ -174,7 +174,7 @@ Webserver.prototype.picture = function() {
               // SVG
               portrait.extract(dir+face, function (data){
                 var tmp = new Svg(data)
-                tmp.write(svg, function (err){
+                tmp.write(__dirname+'/svg/'+svg, function (err){
                   if (err) {
                     utils.onErr('wiriting svg on view', err)
                   } else{
