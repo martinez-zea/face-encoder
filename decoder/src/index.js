@@ -26,7 +26,7 @@ var version = '0.1.0',
   program = require('commander'),
   chalk = require('chalk'),
   classifier = require('./classifier'),
-  decode = require('./decode'),
+  Decoder = require('./decode'),
   Server = require('./server'),
   childProcess = require('child_process')
 
@@ -50,8 +50,8 @@ program
 
 // no options from the command line
 if (process.argv.length < 3 || program.decode){
-  decode.setup()
-  decode.main()
+  var decoder = new Decoder()
+  decoder.bootstrap()
 }
 
 if (program.train) {
