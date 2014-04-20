@@ -9,6 +9,13 @@ function rgbToHex(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
+function writePixels(colors){
+  $('.pixels').each(function(index, colors){
+    console.log('writing color: ' + colors[index]);
+    $(this).css('background-color', colors[index]);
+  });
+}
+
 socket.on('board', function (data) {
   console.info(data)
   $("#status").text(data.status)
