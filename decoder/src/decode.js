@@ -76,13 +76,13 @@ Decoder.prototype.bootstrap = function() {
     var l5 = new five.Sensor({pin: 'A5', freq: 100})
 
     // calibrating
-    if (!self.machine_state.RUNTIME) {
-      logger.log('info', 'calibrating ...')
-      global.io.sockets.emit('status', {board: 'calibrating'} )
+    // if (!self.machine_state.RUNTIME) {
+    //   logger.log('info', 'calibrating ...')
+    //   global.io.sockets.emit('status', {board: 'calibrating'} )
 
-      self.motor.forward(config.FORWARD_SPEED) //buggy
-      self.machine_state.CALIBRATING = true
-    }
+    //   self.motor.forward(config.FORWARD_SPEED) //buggy
+    //   self.machine_state.CALIBRATING = true
+    //}
 
     // Instantiate the sensor, and configure it to read each 10ms
     // var that = this
@@ -202,23 +202,23 @@ Decoder.prototype.bootstrap = function() {
       }
 
       // calibration routine
-      if (self.machine_state.CALIBRATING && self.num_press !== 0) {
-        self.num_press++
-      }
+      // if (self.machine_state.CALIBRATING && self.num_press !== 0) {
+      //   self.num_press++
+      // }
 
-      if(self.machine_state.CALIBRATING && !self.init){
-        self.init = moment()
-        self.num_press++
-        logger.log('err', 'calibration init time: ' + self.init )
-      }
+      // if(self.machine_state.CALIBRATING && !self.init){
+      //   self.init = moment()
+      //   self.num_press++
+      //   logger.log('err', 'calibration init time: ' + self.init )
+      // }
 
-      if (self.machine_state.CALIBRATING && self.num_press > 1 ) {
-        self.end = moment()
-        self.runtime = self.end-self.init
-        self.machine_state.CALIBRATING = false
+      // if (self.machine_state.CALIBRATING && self.num_press > 1 ) {
+      //   self.end = moment()
+      //   self.runtime = self.end-self.init
+      //   self.machine_state.CALIBRATING = false
 
-        logger.log('err', 'calibration total time: ' + self.runtime )
-      }
+      //   logger.log('err', 'calibration total time: ' + self.runtime )
+      // }
     })
 
     // back to home, ready to start again
@@ -235,23 +235,23 @@ Decoder.prototype.bootstrap = function() {
       }
 
       // calibration routine
-      if (self.machine_state.CALIBRATING && self.num_press !== 0) {
-        self.num_press++
-      }
+      // if (self.machine_state.CALIBRATING && self.num_press !== 0) {
+      //   self.num_press++
+      // }
 
-      if(self.machine_state.CALIBRATING && !self.init){
-        self.init = moment()
-        self.num_press++
-        logger.log('err', 'calibration init time: ' + self.init )
-      }
+      // if(self.machine_state.CALIBRATING && !self.init){
+      //   self.init = moment()
+      //   self.num_press++
+      //   logger.log('err', 'calibration init time: ' + self.init )
+      // }
 
-      if (self.machine_state.CALIBRATING && self.num_press > 1 ) {
-        self.end = moment()
-        self.runtime = self.end-self.init
-        self.machine_state.CALIBRATING = false
+      // if (self.machine_state.CALIBRATING && self.num_press > 1 ) {
+      //   self.end = moment()
+      //   self.runtime = self.end-self.init
+      //   self.machine_state.CALIBRATING = false
 
-        logger.log('err', 'calibration total time: ' + self.runtime )
-      }
+      //   logger.log('err', 'calibration total time: ' + self.runtime )
+      // }
     })
   })
 }
