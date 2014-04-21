@@ -2,24 +2,15 @@
 // # Decode
 // main module, where the physical object is translated to a digital image
 
-var fs = require('fs'),
-  io = require('socket.io'),
-  five = require('johnny-five'),
+var five = require('johnny-five'),
   moment = require('moment'),
-  _ = require('lodash'),
-  chalk = require('chalk')
+  _ = require('lodash')
 
 // local modules
 var config = require('./config'),
   utils = require('./utils'),
   logger = require('./logger')
 
-// vars to hold the server, Arduino board and socket.io
-var board
-
-// Hardware variables
-var motor, front,
-  back, start
 
 var ir_array = {
   M1: {pin: 0, value: null, binary: 0, color: 'red'},
@@ -37,8 +28,7 @@ function Decoder () {
     SCANNING : false,
     CALIBRATING: false,
     RUNTIME: null,
-    CALIBRATED: false,
-    MOVING: true
+    LENGTH: 100 //cm
   }
   this.board = new five.Board({
     port: config.SERIAL_PORT,
@@ -61,6 +51,11 @@ Decoder.prototype.bootstrap = function() {
   this.board.on('ready', function (){
     logger.log('info', 'board ready')
 
+    //inform the client that we have connection with the board
+    global.io.sockets.on('connection', function (socket){
+      socket.emit('board', { status: 'ready' });
+    })
+
 
     // crate a new instance of motor
     self.motor = new five.Motor({
@@ -74,9 +69,35 @@ Decoder.prototype.bootstrap = function() {
 
     if (!self.machine_state.RUNTIME) {
       logger.log('info', 'calibrating ...')
+      global.io.sockets.emit('status', {board: 'calibrating'} )
+
       self.motor.forward(config.FORWARD_SPEED) //buggy
       self.machine_state.CALIBRATING = true
     }
+
+    // Instantiate the sensor, and configure it to read each 10ms
+    // var that = this
+    // _.forEach(ir_array, function (item, key){
+    //   that.pinMode(item.pin, five.Pin.ANALOG)
+    // })
+//
+    // this.loop(100, function() {
+    //   _.forEach(ir_array, function (item, key){
+    //     that.analogRead(item.pin, function (voltage) {
+    //       item.value = voltage
+    //       if (voltage < 800) {
+    //         item.binary = 0
+    //         item.color = '#7c737c'
+    //       } else{
+    //         item.binary = 1
+    //         item.color = '#1c1a1c'
+    //       }
+    //     })
+    //   })
+    //   //io.sockets.emit('measure', ir_array);
+    //  // console.log('ir_array',ir_array)
+    // })
+
 
     // ### Listen to buttons events
 
@@ -89,6 +110,7 @@ Decoder.prototype.bootstrap = function() {
         // initiate the motion
         self.motor.forward(config.FORWARD_SPEED) //buggy
         self.machine_state.SCANNING = true
+        global.io.sockets.emit('status', {board: 'scanning'})
       }
     })
 
@@ -131,6 +153,7 @@ Decoder.prototype.bootstrap = function() {
         self.motor.stop()
         //reset the state
         self.machine_state.SCANNING = false
+        global.io.sockets.emit('status', {board: 'portrait'})
       }
 
       // calibration routine
@@ -155,40 +178,8 @@ Decoder.prototype.bootstrap = function() {
   })
 }
 
-Decoder.prototype.calibrate = function() {
-  var self = this
-  var init = null
-  var end = null
-  var total = null
-
-  var calibrating = false
-
-  this.start.on('down', function (){
-    console.info("bbb");
-
-  })
-
-  this.front.on('down', function (){
-
-
-    self.motor.reverse(config.REVERSE_SPEED)
-  })
-
-  this.back.on('down', function (){
-    if(!calibrating){
-      init = moment()
-      calibrating = true
-    }
-
-    if (calibrating) {
-      end = moment()
-      total = end-init
-
-      logger.log('info', 'cal: ' + total )
-    }
-
-    self.motor.stop()
-  })
+Decoder.prototype.where_am_i = function(time) {
+  return (this.machine_state * time)/this.machine_state.LENGTH
 }
 
 
@@ -196,35 +187,10 @@ Decoder.prototype.calibrate = function() {
 //   // # Johnny-five main method
 //   board.on('ready', function() {
 
-//     //inform the client that we have connection with the board
-//     // global.io.sockets.on('connection', function (socket){
-//     //   socket.emit('board', { status: 'ready' });
-//     // })
+//
 
 
 //     // # Setup board
-//     // Instantiate the sensor, and configure it to read each 10ms
-//     var that = this
-//     _.forEach(ir_array, function (item, key){
-//       that.pinMode(item.pin, five.Pin.ANALOG)
-//     })
-// //
-//     // this.loop(25, function() {
-//     //   _.forEach(ir_array, function (item, key){
-//     //     that.analogRead(item.pin, function (voltage) {
-//     //       item.value = voltage
-//     //       if (voltage < 800) {
-//     //         item.binary = 0
-//     //         item.color = '#7c737c'
-//     //       } else{
-//     //         item.binary = 1
-//     //         item.color = '#1c1a1c'
-//     //       }
-//     //     })
-//     //   })
-//     //   io.sockets.emit('measure', ir_array);
-//     //   //console.log('ir_array',ir_array)
-//     // })
 
 
 
