@@ -29,6 +29,23 @@ socket.on('measure', function (data) {
 });
 
 
+//generates random numbers in a range
+function randomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+//generate random colors and writes them to the template
+function fakeImg(){
+  var pixels = new Array(256);
+  _.forEach(pixels, function(pixel, index){
+    var r, g, b = randomInt(0, 255);
+    var color = rgbToHex(r, g, b);
+    pixel = color
+  });
+  writePixels(pixels);
+}
+
 $(function () {
   $(document).ready(function(){
     $('.loading').spin('large', '#000000')
