@@ -2,13 +2,9 @@
 // # Decode
 // main module, where the physical object is translated to a digital image
 
-var five = require('johnny-five'),
-  moment = require('moment'),
-  _ = require('lodash')
-
+var five = require('johnny-five')
 // local modules
 var config = require('./config'),
-  utils = require('./utils'),
   logger = require('./logger')
 
 
@@ -30,19 +26,12 @@ function Decoder () {
     RUNTIME: null,
     LENGTH: 100 //cm
   }
+
   this.board = new five.Board({
     port: config.SERIAL_PORT,
     repl: false
   })
 
-  this.front = null
-  this.back = null
-  this.start = null
-  this.motot = null
-
-  this.init = null
-  this.end = null
-  this.num_press = 0
 }
 
 Decoder.prototype.bootstrap = function() {
@@ -52,13 +41,12 @@ Decoder.prototype.bootstrap = function() {
     logger.log('info', 'board ready')
 
     //inform the client that we have connection with the board
-    global.io.sockets.on('connection', function (socket){
-      socket.emit('board', { status: 'ready' });
-    })
-
+    // global.io.sockets.on('connection', function (socket){
+    //   socket.emit('board', { status: 'ready' });
+    // })
 
     // crate a new instance of motor
-    self.motor = new five.Motor({
+    var motor = new five.Motor({
       pins: { pwm: config.MOTOR_PWM, dir: config.MOTOR_DIRECTION}
     });
 
@@ -70,44 +58,12 @@ Decoder.prototype.bootstrap = function() {
     // ir
     var l0 = new five.Sensor({pin: 'A0', freq: 100})
     var l1 = new five.Sensor({pin: 'A1', freq: 100})
-    var l2 = new five.Sensor({pin: 'A2', freq: 100})
+    //var l2 = new five.Sensor({pin: 'A2', freq: 100})
     var l3 = new five.Sensor({pin: 'A3', freq: 100})
-    var l4 = new five.Sensor({pin: 'A4', freq: 100})
+    //var l4 = new five.Sensor({pin: 'A4', freq: 100})
     var l5 = new five.Sensor({pin: 'A5', freq: 100})
 
-    // calibrating
-    // if (!self.machine_state.RUNTIME) {
-    //   logger.log('info', 'calibrating ...')
-    //   global.io.sockets.emit('status', {board: 'calibrating'} )
-
-    //   self.motor.forward(config.FORWARD_SPEED) //buggy
-    //   self.machine_state.CALIBRATING = true
-    //}
-
-    // Instantiate the sensor, and configure it to read each 10ms
-    // var that = this
-    // _.forEach(ir_array, function (item, key){
-    //   that.pinMode(item.pin, five.Pin.ANALOG)
-    // })
-//
-    // this.loop(100, function() {
-    //   _.forEach(ir_array, function (item, key){
-    //     that.analogRead(item.pin, function (voltage) {
-    //       item.value = voltage
-    //       if (voltage < 800) {
-    //         item.binary = 0
-    //         item.color = '#7c737c'
-    //       } else{
-    //         item.binary = 1
-    //         item.color = '#1c1a1c'
-    //       }
-    //     })
-    //   })
-    //   //io.sockets.emit('measure', ir_array);
-    //  // console.log('ir_array',ir_array)
-    // })
-
-    // IR events
+    // // IR events
     l0.on('read', function (){
       if(this.value < 800){
         ir_array.l0.binary = 0
@@ -130,46 +86,58 @@ Decoder.prototype.bootstrap = function() {
       ir_array.l1.value = this.value
     })
 
-    l2.on('read', function (){
-      if(this.value < 800){
-        ir_array.l2.binary = 0
-        ir_array.l2.color = '#7c737c'
-      } else {
-        ir_array.l2.binary = 1
-        ir_array.l2.color = '#1c1a1c'
-      }
-      ir_array.l2.value = this.value
-    })
+    // l2.on('read', function (){
+    //   if(this.value < 800){
+    //     ir_array.l2.binary = 0
+    //     ir_array.l2.color = '#7c737c'
+    //   } else {
+    //     ir_array.l2.binary = 1
+    //     ir_array.l2.color = '#1c1a1c'
+    //   }
+    //   ir_array.l2.value = this.value
+    // })
 
     l3.on('read', function (){
       if(this.value < 800){
         ir_array.l3.binary = 0
         ir_array.l3.color = '#7c737c'
+
+        ir_array.l2.binary = 0
+        ir_array.l2.color = '#7c737c'
       } else {
         ir_array.l3.binary = 1
         ir_array.l3.color = '#1c1a1c'
+
+        ir_array.l2.binary = 1
+        ir_array.l2.color = '#1c1a1c'
       }
       ir_array.l3.value = this.value
     })
 
-    l4.on('read', function (){
-      if(this.value < 800){
-        ir_array.l4.binary = 0
-        ir_array.l4.color = '#7c737c'
-      } else {
-        ir_array.l4.binary = 1
-        ir_array.l4.color = '#1c1a1c'
-      }
-      ir_array.l4.value = this.value
-    })
+    // l4.on('read', function (){
+    //   if(this.value < 800){
+    //     ir_array.l4.binary = 0
+    //     ir_array.l4.color = '#7c737c'
+    //   } else {
+    //     ir_array.l4.binary = 1
+    //     ir_array.l4.color = '#1c1a1c'
+    //   }
+    //   ir_array.l4.value = this.value
+    // })
 
     l5.on('read', function (){
       if(this.value < 800){
         ir_array.l5.binary = 0
         ir_array.l5.color = '#7c737c'
+
+        ir_array.l4.binary = 0
+        ir_array.l4.color = '#7c737c'
       } else {
         ir_array.l5.binary = 1
         ir_array.l5.color = '#1c1a1c'
+
+        ir_array.l4.binary = 1
+        ir_array.l4.color = '#1c1a1c'
       }
       ir_array.l5.value = this.value
     })
@@ -187,7 +155,7 @@ Decoder.prototype.bootstrap = function() {
       if (!self.machine_state.SCANNING){
         logger.log('info','scanning = true')
         // initiate the motion
-        self.motor.reverse(config.FORWARD_SPEED) //buggy
+        motor.reverse(config.FORWARD_SPEED) //buggy
         self.machine_state.SCANNING = true
         global.io.sockets.emit('status', {board: 'scanning'})
       }
@@ -197,31 +165,8 @@ Decoder.prototype.bootstrap = function() {
     front.on('down', function() {
       logger.log('info','front reached')
 
-      self.motor.reverse(config.REVERSE_SPEED)
-      self.motor.stop()
-      // verify that the process is on going
-      // if (self.machine_state.SCANNING) {
-
-      // }
-
-      // calibration routine
-      // if (self.machine_state.CALIBRATING && self.num_press !== 0) {
-      //   self.num_press++
-      // }
-
-      // if(self.machine_state.CALIBRATING && !self.init){
-      //   self.init = moment()
-      //   self.num_press++
-      //   logger.log('err', 'calibration init time: ' + self.init )
-      // }
-
-      // if (self.machine_state.CALIBRATING && self.num_press > 1 ) {
-      //   self.end = moment()
-      //   self.runtime = self.end-self.init
-      //   self.machine_state.CALIBRATING = false
-
-      //   logger.log('err', 'calibration total time: ' + self.runtime )
-      // }
+      motor.reverse(config.REVERSE_SPEED)
+      motor.stop()
     })
 
     // back to home, ready to start again
@@ -231,32 +176,14 @@ Decoder.prototype.bootstrap = function() {
       // again verify that its doing something
       if (self.machine_state.SCANNING) {
         // stop the motor
-        self.motor.stop()
-        self.motor.forward(config.FORWARD_SPEED)
+        motor.stop()
+        motor.forward(config.FORWARD_SPEED)
         //reset the state
         self.machine_state.SCANNING = false
         global.io.sockets.emit('status', {board: 'portrait'})
       }
-
-      // calibration routine
-      // if (self.machine_state.CALIBRATING && self.num_press !== 0) {
-      //   self.num_press++
-      // }
-
-      // if(self.machine_state.CALIBRATING && !self.init){
-      //   self.init = moment()
-      //   self.num_press++
-      //   logger.log('err', 'calibration init time: ' + self.init )
-      // }
-
-      // if (self.machine_state.CALIBRATING && self.num_press > 1 ) {
-      //   self.end = moment()
-      //   self.runtime = self.end-self.init
-      //   self.machine_state.CALIBRATING = false
-
-      //   logger.log('err', 'calibration total time: ' + self.runtime )
-      // }
     })
+
   })
 }
 
@@ -264,31 +191,5 @@ Decoder.prototype.where_am_i = function(time) {
   return (this.machine_state * time)/this.machine_state.LENGTH
 }
 
-
-// function main() {
-//   // # Johnny-five main method
-//   board.on('ready', function() {
-
-//
-
-
-//     // # Setup board
-
-
-
-
-
-//   })
-
-//   // # buidPortrait
-//   // build an array with the translated data
-//   function buildPortrait (measure) {
-//     // somthing will happen here
-//   }
-
-//   function portraitDone(data){
-//     console.log('portrait',data)
-//   }
-// }
 
 module.exports = Decoder
