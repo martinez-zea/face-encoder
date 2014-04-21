@@ -20,6 +20,10 @@ function writePixels(colors){
   });
 }
 
+function gotohome () {
+  window.location = '/'
+}
+
 socket.on('board', function (data) {
   //console.info(data)
   $('#status').text(data.status)
@@ -45,7 +49,7 @@ function randomInt (min, max) {
 //generate random colors and writes them to the template
 function fakeImg(pixels){
   var hpixels = []
-  _.forEach(pixels, function(pixel, index){
+  _.forEach(pixels, function(pixel){
     //console.log(pixel)
     var r = pixel
     var g = pixel
@@ -58,16 +62,9 @@ function fakeImg(pixels){
   writePixels(hpixels);
 }
 
-/*
 
-$(function () {
-  var data = {'board':'portrait'};
-
-  $(document).ready(function(){
-
-    $('.loading').spin('large', '#000000')
-  })
-
+socket.on('status', function (data){
+  console.info('status data', data)
   if(data.board === 'calibrating'){
     window.location = 'http://localhost:3000'
   }
@@ -78,23 +75,9 @@ $(function () {
 
   if(data.board === 'portrait'){
     window.location = 'http://localhost:3000/portrait'
-    //fakeImg()
-
   }
 })
-*/
 
-/*
-$(document).ready(function(){
-  
-  $('.loading').spin('large', '#000000')
-  $('.bxslider').bxSlider({
-    auto: true,
-    controls: false,
-    autoContols: false,
-  });
-})
-*/
 
 
 
@@ -1134,6 +1117,22 @@ var vcmart = [
 ]
 
 $(document).ready(function(){
-  fakeImg(vcmart);
+
+  if(window.location.pathname === '/scanning'){
+    $('.loading').spin('large', '#000000')
+  }
+
+  if(window.location.pathname === '/portrait'){
+    fakeImg(vzea)
+    window.setTimeout(gotohome, 30000);
+  }
+
+  if(window.location.pathname === '/'){
+    $('.bxslider').bxSlider({
+      auto: true,
+      controls: false,
+      autoContols: false,
+    })
+  }
 })
 
