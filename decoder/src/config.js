@@ -4,7 +4,8 @@ module.exports = {
   // port to use by the local server
   SERVER_PORT : 3000,
   // local USB port
-  SERIAL_PORT : '/dev/tty.usbmodem1421',
+  //SERIAL_PORT : '/dev/tty.usbmodem1421',
+  SERIAL_PORT: '/dev/ttyACM0',
   // pins and speed of the motor
   MOTOR_PWM : 9,
   MOTOR_DIRECTION : 8,

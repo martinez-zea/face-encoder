@@ -47,7 +47,7 @@ Server.prototype.initiate = function (){
   // Start socket.io with not so verbose logging
   console.log( chalk.gray('initializing socket.io') )
   global.io = io = socket.listen(server)
-  io.set('log level', 1)
+  io.set('log level', 2)
 }
 
 Server.sendResponse = function (res, data, params){

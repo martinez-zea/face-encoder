@@ -1,3 +1,5 @@
+'use strict';
+
 var socket = io.connect('http://localhost:3000');
 
 function componentToHex(c) {
@@ -20,6 +22,22 @@ socket.on('measure', function (data) {
     $('#'+key).css('background-color', item.color)
   })
 });
+
+socket.on('status', function (data){
+  console.info('status data', data)
+
+  if(data.board === 'calibrating'){
+    window.location = 'http://localhost:3000'
+  }
+
+  if(data.board === 'scanning'){
+   window.location = 'http://localhost:3000/scanning'
+  }
+
+  if(data.board === 'portrait'){
+    window.location = 'http://localhost:3000/portrait'
+  }
+})
 
 
 $(document).ready(function(){
