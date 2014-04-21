@@ -21,12 +21,12 @@ function writePixels(colors){
 }
 
 socket.on('board', function (data) {
-  console.info(data)
-  $("#status").text(data.status)
+  //console.info(data)
+  $('#status').text(data.status)
 });
 
 socket.on('measure', function (data) {
-  console.log("data",data)
+  //console.log('measure data',data)
   _.forEach(data, function (item, key){
     $('#'+key).css('background-color', item.color)
   })

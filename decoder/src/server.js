@@ -100,7 +100,7 @@ Server.prototype.index = function (){
 Server.prototype.scanning = function (){
 
   this.router.get('/scanning', function (req, res) {
-    console.log( chalk.gray('get /scannig') )
+    console.log( chalk.gray('get /scanning') )
 
     var params = {
       title: i18n.t('title'),
@@ -122,7 +122,7 @@ Server.prototype.scanning = function (){
 
     Server.loadAndCompile(views+'/scanning.html', function(data, err){
       if (err) {
-        utils.onErr('compiling scannig', err)
+        utils.onErr('compiling scanning', err)
       } else{
         Server.sendResponse(res, data, params)
       }
