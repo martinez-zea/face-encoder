@@ -22,8 +22,11 @@ socket.on('measure', function (data) {
 });
 
 
-$(function () {
-  $(document).ready(function(){
-    $('.loading').spin('large', '#000000')
-  })
+$(document).ready(function(){
+  $('.loading').spin('large', '#000000')
+  $('.bxslider').bxSlider({
+    auto: true,
+    controls: false,
+    autoContols: false,
+  });
 })

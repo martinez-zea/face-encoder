@@ -35,8 +35,9 @@ function Server () {
 
 Server.prototype.initiate = function (){
   // routes
-  this.index(this.router)
-  this.scanning(this.router)
+  this.index()
+  this.scanning()
+  this.portrait()
 
   // start the web server
   console.log( chalk.magenta('web serer running at port: ' + config.SERVER_PORT ) )
@@ -63,9 +64,9 @@ Server.loadAndCompile = function (filename, callback){
     });
 }
 
-Server.prototype.index = function (router){
+Server.prototype.index = function (){
 
-  router.get('/', function (req, res) {
+  this.router.get('/', function (req, res) {
     console.log( chalk.gray('get /') )
 
     var params = {
@@ -96,9 +97,9 @@ Server.prototype.index = function (router){
   })
 }
 
-Server.prototype.scanning = function (router){
+Server.prototype.scanning = function (){
 
-  router.get('/scanning', function (req, res) {
+  this.router.get('/scanning', function (req, res) {
     console.log( chalk.gray('get /scannig') )
 
     var params = {
@@ -120,6 +121,39 @@ Server.prototype.scanning = function (router){
     }
 
     Server.loadAndCompile(views+'/scanning.html', function(data, err){
+      if (err) {
+        utils.onErr('compiling scannig', err)
+      } else{
+        Server.sendResponse(res, data, params)
+      }
+    })
+  })
+}
+
+Server.prototype.portrait = function (){
+
+  this.router.get('/portrait', function (req, res) {
+    console.log( chalk.gray('get /portrait') )
+
+    var params = {
+      title: i18n.t('title'),
+      // titles
+      first_step_title: i18n.t('first_step_title'),
+      second_step_title: i18n.t('second_step_title'),
+      third_step_title: i18n.t('third_step_title'),
+      four_step_title: i18n.t('four_step_title'),
+      five_step_title: i18n.t('five_step_title'),
+
+      // content
+      first_content: i18n.t('first_content'),
+      name_instruction: i18n.t('name_instruction'),
+      email_instruction: i18n.t('email_instruction'),
+      picture_instruction: i18n.t('picture_instruction'),
+
+      instructions: i18n.t('instructions')
+    }
+
+    Server.loadAndCompile(views+'/portrait.html', function(data, err){
       if (err) {
         utils.onErr('compiling scannig', err)
       } else{
