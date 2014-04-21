@@ -63,9 +63,9 @@ Decoder.prototype.bootstrap = function() {
     });
 
     // buttons
-    self.front = new five.Button(config.FRONT_PIN);
-    self.back = new five.Button(config.BACK_PIN);
-    self.start = new five.Button(config.START_PIN);
+    var front = new five.Button(config.FRONT_PIN);
+    var back = new five.Button(config.BACK_PIN);
+    var start = new five.Button(config.START_PIN);
 
     // ir
     var l0 = new five.Sensor({pin: 'A0', freq: 100})
@@ -180,26 +180,29 @@ Decoder.prototype.bootstrap = function() {
 
     // ### Listen to buttons events
     // Button that controls the initiate of the process
-    self.start.on('down', function() {
+    start.on('down', function() {
       logger.log('info','start pressed')
 
       // if we are not in the middle of a process
       if (!self.machine_state.SCANNING){
+        logger.log('info','scanning = true')
         // initiate the motion
-        self.motor.forward(config.FORWARD_SPEED) //buggy
+        self.motor.reverse(config.FORWARD_SPEED) //buggy
         self.machine_state.SCANNING = true
         global.io.sockets.emit('status', {board: 'scanning'})
       }
     })
 
     // the object reached the front limit
-    self.front.on('down', function() {
+    front.on('down', function() {
       logger.log('info','front reached')
 
+      self.motor.reverse(config.REVERSE_SPEED)
+      self.motor.stop()
       // verify that the process is on going
-      if (self.machine_state.SCANNING) {
-        self.motor.reverse(config.REVERSE_SPEED)
-      }
+      // if (self.machine_state.SCANNING) {
+
+      // }
 
       // calibration routine
       // if (self.machine_state.CALIBRATING && self.num_press !== 0) {
@@ -222,13 +225,14 @@ Decoder.prototype.bootstrap = function() {
     })
 
     // back to home, ready to start again
-    self.back.on('down', function() {
+    back.on('down', function() {
       logger.log('info','back reached')
 
       // again verify that its doing something
       if (self.machine_state.SCANNING) {
         // stop the motor
         self.motor.stop()
+        self.motor.forward(config.FORWARD_SPEED)
         //reset the state
         self.machine_state.SCANNING = false
         global.io.sockets.emit('status', {board: 'portrait'})
