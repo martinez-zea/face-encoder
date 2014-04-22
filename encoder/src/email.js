@@ -5,7 +5,8 @@ var nodemailer = require('nodemailer'),
   local_config = require('./local_config'),
   chalk = require('chalk'),
   i18n = require('i18next'),
-  utils = require('./utils')
+  utils = require('./utils'),
+  Db = require('./database')
 
 // configuration for 18n
 i18n.init({
@@ -27,28 +28,42 @@ function Mailer(){
   });
 }
 
+Mailer.prototype.sendEmails = function(){
+  var db = new Db()
+  db.find(function(users){
+    _.forEach(users, function(item){
+      this.compile(item)
+    })
+  })
+}}
+
 // TODO: adjust to stract data from db
-// Mailer.prototype.compile = function() {
-//     // data for the template
-//     var params = {
-//       username: req.post.username,
-//       hello: i18n.t('email_hello'),
-//       body: i18n.t('email_body'),
-//       information: i18n.t('email_information'),
-//       bye: i18n.t('email_bye')
-//     }
+Mailer.prototype.compile = function(user) {
+     // data for the template
+     var params = {
+       username: user.username,
+       email: user.email,
+       paths: {
+         png: user.face,
+         svg: user.svg
+       },
+       hello: i18n.t('email_hello'),
+       body: i18n.t('email_body'),
+       information: i18n.t('email_information'),
+       bye: i18n.t('email_bye')
+     }
 
-//   //compile and send the email
-//   loadAndCompile(views+'/email.html', function (data, err){
-//     if (err) {
-//       utils.onErr('compiling email', err)
-//     } else{
-//       Mailer.send(req.post.email, data(params), __dirname+'/portraits/16/test.png')
-//     }
-//   })
-// }
+   //compile and send the email
+   loadAndCompile(views+'/email.html', function (data, err){
+     if (err) {
+       utils.onErr('compiling email', err)
+     } else{
+       this.send(user.email, data(params), user.face, user.svg)
+     }
+   })
+}
 
-Mailer.prototype.send = function(to, body, img_path) {
+Mailer.prototype.send = function(to, body, img_path, portrait_path) {
   // envelope
   // TODO: review attachments
   var mailOptions = {
@@ -71,7 +86,7 @@ Mailer.prototype.send = function(to, body, img_path) {
       }
       // shutdown the connection
       this.transport.close()
-  });
+  })
 }
 
 module.exports.Mailer = Mailer

@@ -11,7 +11,8 @@ var picture = require('./picture'),
   portrait = require('./portrait'),
   Server = require('./server'),
   logger = require('./logger'),
-  Svg = require('./svg')
+  Svg = require('./svg'),
+  Mailer = require('./email')
 
 
 // command line options
@@ -21,6 +22,7 @@ program
   .option('-r, --portrait', '--portrait <input>')
   .option('-s, --server', 'initiate the server')
   .option('-d, --draw', 'draw the svg file')
+  .option('-e, --email', 'send emails')
   .parse(process.argv);
 
 // # Picture
@@ -83,3 +85,7 @@ if (program.draw) {
   })
 }
 
+if (program.email){
+  var mailer = new Mailer()
+  mailer.sendEmails()
+}

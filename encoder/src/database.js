@@ -28,4 +28,12 @@ Database.prototype.insert = function(doc, callback) {
   })
 }
 
+// TODO: this is a draft syntax should be reviewed
+Datastore.prototype.find = function(callback){
+ this.db.find({s
+tatus:'wating'}, function(data){
+   callback(data)
+ })
+}
+
 module.exports = Database
