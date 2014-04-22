@@ -12,9 +12,9 @@ function rgbToHex(r, g, b) {
 }
 
 function writePixels(colors){
-  console.log(colors);
+  // console.log(colors);
   $('.pixels').each(function(index){
-    console.log('index: ' + index);
+    // console.log('index: ' + index);
     //console.log('writing color: ' + colors[index]);
     $(this).css('background-color', colors[index]);
   });
@@ -37,12 +37,12 @@ socket.on('measure', function (data) {
 });
 
 socket.on('status', function (data){
-  console.info('status data', data);
+  // console.info('status data', data);
 });
 
 //generates random numbers in a range
 function randomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
@@ -64,7 +64,7 @@ function fakeImg(pixels){
 
 
 socket.on('status', function (data){
-  console.info('status data', data)
+  //console.info('status data', data)
   if(data.board === 'calibrating'){
     window.location = 'http://localhost:3000'
   }
@@ -1119,7 +1119,7 @@ var vcmart = [
 $(document).ready(function(){
 
   if(window.location.pathname === '/scanning'){
-    $('.loading').spin('large', '#000000')
+   // $('.loading').spin('large', '#000000')
   }
 
   if(window.location.pathname === '/portrait'){
