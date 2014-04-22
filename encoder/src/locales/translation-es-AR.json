@@ -7,7 +7,7 @@
   "four_step_title": "fotografía",
   "five_step_title": "visualización",
 
-  "first_content": "en este modulo podrás generar los archivos necesarios para la producción de tu retrato codificado, para iniciar hacé click en el botón de la parte inferior y seguí las instrucciones",
+  "first_content": "en este modulo podras generar los archivos necesarios para la producción de tu retrato codificado, para iniciar hacé click en el botón de la parte inferior y seguí las instrucciones",
   "name_instruction": "escribí tu nombre",
   "email_instruction": "escribí tu e-mail",
   "picture_instruction": "mirá a la cámara y presioná el botón",
@@ -28,9 +28,9 @@
   "result": "tu imagen procesada",
   "the_end": "tu retrato ha sido codificado, pronto lo recibirás en tu correo",
 
-  "email_subject": "Tu retrato codificado",
+  "email_subject": "Retrato Codificado",
   "email_hello": "Hola",
-  "email_body": "Tu retrato esta adjunto",
-  "email_information": "Si querés más información dirijite a",
-  "email_bye": "saludos!"
+  "email_body": "Tu retrato generado por el codificador de Retratos se encuentra en los archivos adjuntos. El archivo SVG contiene el perfil de tu objeto, para producirlo fisicamente deberas usar un servicio de corte controlado por ordenador como corte laser o CNC.",
+  "email_information": "Si querés tener más información sobre el proyecto visita  --web-- o escribe al correo xxxx",
+  "email_bye": "Saludos, \n martinez-zea"
 }
