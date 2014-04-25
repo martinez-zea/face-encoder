@@ -121,6 +121,7 @@ Webserver.prototype.receive = function() {
     logger.log('info', 'webserver POST /userDone')
 
     // serialize the received data
+    // TODO: typo on status, fix to next release
     var doc = {
       username: req.post.username,
       email: req.post.email,

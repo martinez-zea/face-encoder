@@ -30,7 +30,7 @@
 
   "email_subject": "Retrato Codificado",
   "email_hello": "Hola",
-  "email_body": "Tu retrato generado por el codificador de Retratos se encuentra en los archivos adjuntos. El archivo SVG contiene el perfil de tu objeto, para producirlo fisicamente deberas usar un servicio de corte controlado por ordenador como corte laser o CNC.",
-  "email_information": "Si querés tener más información sobre el proyecto visita  --web-- o escribe al correo xxxx",
-  "email_bye": "Saludos, \n martinez-zea"
+  "email_body": "Tu retrato generado por el Codificador de Retratos se encuentra en los archivos adjuntos. El archivo SVG contiene el perfil de tu objeto, para producirlo fisicamente deberas usar un servicio de corte controlado por ordenador como corte laser o CNC.",
+  "email_information": "Si querés tener más información sobre el proyecto visita http://martinez-zea.info",
+  "email_bye": "Saludos,  ** martinez-zea **"
 }

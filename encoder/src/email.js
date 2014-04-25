@@ -3,10 +3,12 @@
 // send emails with information and svg to the interactors
 var nodemailer = require('nodemailer'),
   local_config = require('./local_config'),
-  chalk = require('chalk'),
+  _ = require('lodash'),
+  logger = require('./logger'),
   i18n = require('i18next'),
   utils = require('./utils'),
-  Db = require('./database')
+  Db = require('./database'),
+  Template = require('./template')
 
 // configuration for 18n
 i18n.init({
@@ -25,45 +27,51 @@ function Mailer(){
           user: local_config.EMAIL_USER,
           pass: local_config.EMAIL_PASS
       }
-  });
+  })
+
+  this.db = new Db(__dirname+'/static/users.db')
 }
 
 Mailer.prototype.sendEmails = function(){
-  var db = new Db()
-  db.find(function(users){
+  var self = this
+
+  this.db.find(function(users){
+    logger.log('info', 'sending ' + users.length + ' emails')
     _.forEach(users, function(item){
-      this.compile(item)
+      self.compile(item)
     })
   })
-}}
+}
 
 // TODO: adjust to stract data from db
 Mailer.prototype.compile = function(user) {
-     // data for the template
-     var params = {
-       username: user.username,
-       email: user.email,
-       paths: {
-         png: user.face,
-         svg: user.svg
-       },
-       hello: i18n.t('email_hello'),
-       body: i18n.t('email_body'),
-       information: i18n.t('email_information'),
-       bye: i18n.t('email_bye')
-     }
+  var self = this
+  // data for the template
+  var params = {
+    username: user.username,
+    email: user.email,
+    paths: {
+      png: user.face,
+      svg: user.svg
+    },
+    hello: i18n.t('email_hello'),
+    body: i18n.t('email_body'),
+    information: i18n.t('email_information'),
+    bye: i18n.t('email_bye')
+  }
 
-   //compile and send the email
-   loadAndCompile(views+'/email.html', function (data, err){
+  var template = new Template(__dirname +'/views/email.html')
+  template.compile(function (err, data){
      if (err) {
        utils.onErr('compiling email', err)
      } else{
-       this.send(user.email, data(params), user.face, user.svg)
+      self.send(user.email, data(params), user.face, user.svg, user._id)
      }
    })
 }
 
-Mailer.prototype.send = function(to, body, img_path, portrait_path) {
+Mailer.prototype.send = function(to, body, img_path, portrait_path, id) {
+  var self = this
   // envelope
   // TODO: review attachments
   var mailOptions = {
@@ -71,22 +79,38 @@ Mailer.prototype.send = function(to, body, img_path, portrait_path) {
     subject: i18n.t('email_subject'),
     to: to,
     html: body,
-    //forceEmbeddedImages: true,
-    //filename: 'portrait.png',
-    filePath: img_path,
-    cid:'portrait@decod.er'
-  }
+    attachments: [
+      {
+        filename: 'portrait.png',
+        filePath: __dirname+'/static/img/'+img_path,
+        cid:'portrait@decod.er'
+      },
+      {
+        filename: 'portrait.svg',
+        filePath: __dirname+'/static/svg/'+portrait_path,
+        cid:'svg@decod.er'
+      }
+      ]
+    }
 
   // send mail with defined transport object
   this.transport.sendMail(mailOptions, function (err, response){
       if(err){
           utils.onErr('sending mail', err)
       }else{
-        console.log( chalk.gray('Message sent: ' + response.message) )
+        logger.log('info', 'Message sent: ' + response.message)
+        // shutdown the connection
+        //self.transport.close()
+
+        self.db.update(id, function (err){
+          if (err) {
+            utils.onErr('updating', err)
+          } else{
+            logger.log('info', 'doc updated')
+          }
+        })
       }
-      // shutdown the connection
-      this.transport.close()
   })
 }
 
-module.exports.Mailer = Mailer
+module.exports = Mailer

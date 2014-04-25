@@ -28,12 +28,25 @@ Database.prototype.insert = function(doc, callback) {
   })
 }
 
-// TODO: this is a draft syntax should be reviewed
-Datastore.prototype.find = function(callback){
- this.db.find({s
-tatus:'wating'}, function(data){
-   callback(data)
+Database.prototype.find = function(callback){
+ this.db.find({status:'wating'}, function (err,docs){
+  if (err) {
+    utils.onErr('query db', err)
+  } else{
+    callback(docs)
+  }
  })
+}
+
+Database.prototype.update = function(id, callback) {
+  this.db.update({_id: id}, {$set:{status:'sent'}}, function (err, doc){
+    if (err){
+      utils.onErr('updating doc', err)
+      callback(err, null)
+    } else {
+      callback(null, doc)
+    }
+  })
 }
 
 module.exports = Database
